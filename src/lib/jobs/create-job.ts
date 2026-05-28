@@ -27,79 +27,75 @@ export async function createJob(
   const validatedInput = validation.data || input;
   const estimatedCredits = adapter.creditEstimate(validatedInput);
 
-  // 2. Perform database transaction to deduct credits and create job
-  const jobId = await db.transaction(async (tx) => {
-    // Get user credit balance
-    const balances = await tx
-      .select()
-      .from(creditBalances)
-      .where(eq(creditBalances.user_id, userId))
-      .limit(1);
+  // 2. Perform database sequential operations to deduct credits and create job
+  // Get user credit balance
+  const balances = await db
+    .select()
+    .from(creditBalances)
+    .where(eq(creditBalances.user_id, userId))
+    .limit(1);
 
-    let userBalance = 0;
-    if (balances.length === 0) {
-      // Create a balance record if it missing for some reason
-      await tx.insert(creditBalances).values({
-        user_id: userId,
-        credits: 0,
-      });
-    } else {
-      userBalance = balances[0].credits;
-    }
-
-    if (userBalance < estimatedCredits) {
-      throw new Error(
-        `Otillräckliga credits. Jobbet kräver ${estimatedCredits} credits, men du har bara ${userBalance}.`
-      );
-    }
-
-    // Deduct credits
-    await tx
-      .update(creditBalances)
-      .set({
-        credits: userBalance - estimatedCredits,
-        updated_at: new Date(),
-      })
-      .where(eq(creditBalances.user_id, userId));
-
-    // Create job record
-    const actorIdKey = adapter.actorIdEnvKey || '';
-    const actorId = actorIdKey ? process.env[actorIdKey] || '' : '';
-
-    const newJobs = await tx
-      .insert(scrapeJobs)
-      .values({
-        user_id: userId,
-        scraper_id: scraperId,
-        scraper_name: adapter.name,
-        provider: adapter.provider,
-        status: 'queued',
-        input_json: input,
-        normalized_input_json: validatedInput,
-        estimated_credits: estimatedCredits,
-        charged_credits: estimatedCredits,
-        apify_actor_id: actorId || null,
-        created_at: new Date(),
-        updated_at: new Date(),
-      })
-      .returning();
-
-    const job = newJobs[0];
-
-    // Log the transaction with reference to the job
-    await tx.insert(creditTransactions).values({
+  let userBalance = 0;
+  if (balances.length === 0) {
+    // Create a balance record if it is missing for some reason
+    await db.insert(creditBalances).values({
       user_id: userId,
-      amount: -estimatedCredits,
-      type: 'usage',
-      reference_id: job.id,
-      metadata: {
-        scraper_id: scraperId,
-        maxResults: validatedInput.maxResults,
-      },
+      credits: 0,
     });
+  } else {
+    userBalance = balances[0].credits;
+  }
 
-    return job.id;
+  if (userBalance < estimatedCredits) {
+    throw new Error(
+      `Otillräckliga credits. Jobbet kräver ${estimatedCredits} credits, men du har bara ${userBalance}.`
+    );
+  }
+
+  // Deduct credits
+  await db
+    .update(creditBalances)
+    .set({
+      credits: userBalance - estimatedCredits,
+      updated_at: new Date(),
+    })
+    .where(eq(creditBalances.user_id, userId));
+
+  // Create job record
+  const actorIdKey = adapter.actorIdEnvKey || '';
+  const actorId = actorIdKey ? process.env[actorIdKey] || '' : '';
+
+  const newJobs = await db
+    .insert(scrapeJobs)
+    .values({
+      user_id: userId,
+      scraper_id: scraperId,
+      scraper_name: adapter.name,
+      provider: adapter.provider,
+      status: 'queued',
+      input_json: input,
+      normalized_input_json: validatedInput,
+      estimated_credits: estimatedCredits,
+      charged_credits: estimatedCredits,
+      apify_actor_id: actorId || null,
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+    .returning();
+
+  const job = newJobs[0];
+
+  // Log the transaction with reference to the job
+  await db.insert(creditTransactions).values({
+    user_id: userId,
+    amount: -estimatedCredits,
+    type: 'usage',
+    reference_id: job.id,
+    metadata: {
+      scraper_id: scraperId,
+      maxResults: validatedInput.maxResults,
+    },
   });
 
-  return jobId;
+  return job.id;
 }

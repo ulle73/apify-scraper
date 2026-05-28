@@ -27,6 +27,7 @@ export const POST = auth(async (req) => {
     const jobId = await createJob(userId, scraperId, input);
 
     // 2. Dispatch background scraping process via Inngest
+    let inngestOk = false;
     try {
       await inngest.send({
         name: 'scraper/job.created',
@@ -35,15 +36,16 @@ export const POST = auth(async (req) => {
           userId,
         },
       });
+      inngestOk = true;
     } catch (inngestError) {
-      console.error('Failed to trigger background job with Inngest, attempting inline fallback:', inngestError);
-      
-      // Inline execution fallback if Inngest is not configured in dev
-      if (process.env.NODE_ENV === 'development') {
-        const { processJob } = await import('@/lib/jobs/process-job');
-        // Run asynchronously in background
-        processJob(jobId).catch(console.error);
-      }
+      console.warn('[Inngest] Kunde inte skicka event (är Inngest Dev Server igång?). Kör jobbet direkt:', inngestError);
+    }
+
+    // Inline fallback: kör jobbet synkront om Inngest inte är tillgänglig
+    // OBS: Detta blockerar svaret tills jobbet är klart – perfekt för dev
+    if (!inngestOk) {
+      const { processJob } = await import('@/lib/jobs/process-job');
+      await processJob(jobId);
     }
 
     return NextResponse.json({ jobId });

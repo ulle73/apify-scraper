@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { scrapeJobs } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { scrapeJobs, scrapeResults } from '@/lib/db/schema';
+import { eq, and, desc } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 
 export const GET = auth(async (req, context) => {
@@ -31,7 +31,29 @@ export const GET = auth(async (req, context) => {
       return NextResponse.json({ error: 'Jobbet hittades inte.' }, { status: 404 });
     }
 
-    return NextResponse.json(jobs[0]);
+    const job = jobs[0];
+
+    // Include results preview if the job is completed
+    let results: any[] = [];
+    if (job.status === 'completed') {
+      results = await db
+        .select({
+          id: scrapeResults.id,
+          company_name: scrapeResults.company_name,
+          phone: scrapeResults.phone,
+          website: scrapeResults.website,
+          domain: scrapeResults.domain,
+          category: scrapeResults.category,
+          rating: scrapeResults.rating,
+          review_count: scrapeResults.review_count,
+        })
+        .from(scrapeResults)
+        .where(eq(scrapeResults.job_id, id))
+        .orderBy(desc(scrapeResults.created_at))
+        .limit(20);
+    }
+
+    return NextResponse.json({ job, results });
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || 'Kunde inte hämta jobbet.' },

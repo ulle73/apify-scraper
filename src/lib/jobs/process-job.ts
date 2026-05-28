@@ -213,33 +213,31 @@ async function failJob(
 
   // Refund credits
   if (creditsToRefund > 0) {
-    await db.transaction(async tx => {
-      const balances = await tx
-        .select()
-        .from(creditBalances)
-        .where(eq(creditBalances.user_id, userId))
-        .limit(1);
+    const balances = await db
+      .select()
+      .from(creditBalances)
+      .where(eq(creditBalances.user_id, userId))
+      .limit(1);
 
-      const currentCredits = balances[0]?.credits ?? 0;
-      
-      await tx
-        .update(creditBalances)
-        .set({
-          credits: currentCredits + creditsToRefund,
-          updated_at: new Date(),
-        })
-        .where(eq(creditBalances.user_id, userId));
+    const currentCredits = balances[0]?.credits ?? 0;
+    
+    await db
+      .update(creditBalances)
+      .set({
+        credits: currentCredits + creditsToRefund,
+        updated_at: new Date(),
+      })
+      .where(eq(creditBalances.user_id, userId));
 
-      await tx.insert(creditTransactions).values({
-        user_id: userId,
-        amount: creditsToRefund,
-        type: 'refund',
-        reference_id: jobId,
-        metadata: {
-          reason: 'Job failed, credits refunded',
-          error: errorMessage,
-        },
-      });
+    await db.insert(creditTransactions).values({
+      user_id: userId,
+      amount: creditsToRefund,
+      type: 'refund',
+      reference_id: jobId,
+      metadata: {
+        reason: 'Job failed, credits refunded',
+        error: errorMessage,
+      },
     });
   }
 

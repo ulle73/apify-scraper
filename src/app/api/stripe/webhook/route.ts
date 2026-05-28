@@ -48,46 +48,44 @@ export async function POST(req: Request) {
         return NextResponse.json({ received: true, warning: 'Inga credits krediterade' });
       }
 
-      await db.transaction(async (tx) => {
-        // Fetch current user credit balance
-        const balances = await tx
-          .select()
-          .from(creditBalances)
-          .where(eq(creditBalances.user_id, userId))
-          .limit(1);
+      // Fetch current user credit balance
+      const balances = await db
+        .select()
+        .from(creditBalances)
+        .where(eq(creditBalances.user_id, userId))
+        .limit(1);
 
-        if (balances.length === 0) {
-          // If balance does not exist for some reason, create it
-          await tx.insert(creditBalances).values({
-            user_id: userId,
-            credits: credits,
-            created_at: new Date(),
-            updated_at: new Date(),
-          });
-        } else {
-          // Increment existing credits
-          const currentCredits = balances[0].credits;
-          await tx
-            .update(creditBalances)
-            .set({
-              credits: currentCredits + credits,
-              updated_at: new Date(),
-            })
-            .where(eq(creditBalances.user_id, userId));
-        }
-
-        // Add to transactions log
-        await tx.insert(creditTransactions).values({
+      if (balances.length === 0) {
+        // If balance does not exist for some reason, create it
+        await db.insert(creditBalances).values({
           user_id: userId,
-          amount: credits,
-          type: 'purchase',
-          reference_id: session.id,
-          metadata: {
-            planId,
-            stripe_session_id: session.id,
-          },
+          credits: credits,
           created_at: new Date(),
+          updated_at: new Date(),
         });
+      } else {
+        // Increment existing credits
+        const currentCredits = balances[0].credits;
+        await db
+          .update(creditBalances)
+          .set({
+            credits: currentCredits + credits,
+            updated_at: new Date(),
+          })
+          .where(eq(creditBalances.user_id, userId));
+      }
+
+      // Add to transactions log
+      await db.insert(creditTransactions).values({
+        user_id: userId,
+        amount: credits,
+        type: 'purchase',
+        reference_id: session.id,
+        metadata: {
+          planId,
+          stripe_session_id: session.id,
+        },
+        created_at: new Date(),
       });
 
       console.log(`Krediterade ${credits} credits till användare: ${userId}`);

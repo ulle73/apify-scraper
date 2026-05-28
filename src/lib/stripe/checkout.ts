@@ -2,10 +2,33 @@ import Stripe from 'stripe';
 import { PricingPlan } from '../pricing/plans';
 
 const stripeKey = process.env.STRIPE_SECRET_KEY || '';
+const stripeMode = process.env.STRIPE_MODE || 'test';
+
+// Validate that keys match the configured mode
+if (stripeKey) {
+  const isTestKey = stripeKey.startsWith('sk_test_');
+  const isLiveKey = stripeKey.startsWith('sk_live_');
+
+  if (stripeMode === 'test' && isLiveKey) {
+    throw new Error(
+      '⚠️  STRIPE KONFIGURATIONSFEL: STRIPE_MODE=test men STRIPE_SECRET_KEY är en sk_live_-nyckel!\n' +
+      'Använd en sk_test_-nyckel från Stripe Dashboard (Test-läge) för att testa säkert.'
+    );
+  }
+  if (stripeMode === 'live' && isTestKey) {
+    throw new Error(
+      '⚠️  STRIPE KONFIGURATIONSFEL: STRIPE_MODE=live men STRIPE_SECRET_KEY är en sk_test_-nyckel!\n' +
+      'Byt till din sk_live_-nyckel för produktionstrafik.'
+    );
+  }
+
+  const modeLabel = isTestKey ? '🧪 SANDBOX/TEST' : '🔴 LIVE/PRODUKTION';
+  console.log(`[Stripe] Initierad i ${modeLabel}-läge`);
+}
 
 export const stripe = stripeKey
   ? new Stripe(stripeKey, {
-      apiVersion: '2024-12-22.accredited' as any, // Standard Next.js stripe setup
+      apiVersion: '2024-12-22.accredited' as any,
     })
   : null;
 

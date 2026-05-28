@@ -71,6 +71,34 @@ export default async function BillingPage(context: { searchParams: Promise<{ sta
         </div>
       )}
 
+      {/* Stripe Sandbox Mode Banner */}
+      {process.env.STRIPE_MODE === 'test' && (
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm space-y-1.5">
+          <div className="flex items-center gap-2 font-bold">
+            <span className="text-base">🧪</span>
+            <span>Stripe Sandbox / Test-läge aktivt</span>
+          </div>
+          <p className="text-xs text-amber-400/80 leading-relaxed">
+            Inga riktiga betalningar genomförs. Använd Stripes testkort för att simulera köp:
+          </p>
+          <div className="flex flex-wrap gap-4 mt-1">
+            <div className="text-xs font-mono bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-lg">
+              <span className="text-amber-500 font-bold">Kortnummer: </span>
+              <span className="text-white tracking-widest">4242 4242 4242 4242</span>
+            </div>
+            <div className="text-xs font-mono bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-lg">
+              <span className="text-amber-500 font-bold">Utgångsdatum: </span>
+              <span className="text-white">valfritt i framtiden</span>
+            </div>
+            <div className="text-xs font-mono bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-lg">
+              <span className="text-amber-500 font-bold">CVC: </span>
+              <span className="text-white">valfri 3 siffror</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       {/* Credits Card Display */}
       <div className="p-6 rounded-2xl border border-navy-850 bg-navy-900/40 backdrop-blur-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div className="flex items-center gap-4">
