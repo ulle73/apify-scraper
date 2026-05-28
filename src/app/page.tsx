@@ -1,31 +1,6 @@
-import {
-  ArrowRight,
-  Check,
-  FileText,
-  Globe2,
-  Instagram,
-  Layers3,
-  LockKeyhole,
-  MapPin,
-  MousePointer2,
-  Play,
-  Search,
-  ShieldCheck,
-  Sparkles,
-  WalletCards,
-} from 'lucide-react';
+import { ArrowRight, Check, FileText, Globe2, Instagram, MapPin, Play, Search, Sparkles, WalletCards } from 'lucide-react';
 
 const scrapers = [
-  {
-    name: 'Google Maps Leads',
-    description: 'Extract businesses from Google Maps with contact details.',
-    credits: 'From 10 credits',
-    icon: MapPin,
-    iconClass: 'from-green-50 to-emerald-100 text-green-600 ring-green-100',
-  },
-  {
-    name: 'Website Contact Finder',
-    description: 'Find emails, phones and contact information from any website.',
-    credits: 'From 15 credits',
-    icon: Globe2,
-    iconClass: 'from-blue-50 to-sky-
+  { name: 'Google Maps Leads', desc: 'Create a business list from maps data.', credits: 'From 10 credits', Icon: MapPin, bubble: 'bg-emerald-50 text-emerald-600' },
+  { name: 'Website Contact Finder', desc: 'Collect public contact fields from websites.', credits: 'From 15 credits', Icon: Globe2, bubble: 'bg-blue-50 text-blue-600' },
+  { name: 'Google Search Results', desc: 'Collect clean search result
