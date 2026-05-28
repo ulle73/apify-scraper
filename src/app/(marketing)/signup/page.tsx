@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Zap, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { Layers, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -60,57 +60,56 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-navy-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Decorative Orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-brand-500/10 blur-[100px] pointer-events-none" />
-
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <Link href="/" className="flex justify-center items-center gap-2 group mb-6">
-          <div className="p-2 bg-gradient-to-br from-brand-400 to-brand-600 rounded-lg text-navy-950 shadow-md">
-            <Zap className="h-6 w-6 fill-current" />
+    <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4">
+      {/* Branding */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
+        <Link href="/" className="flex justify-center items-center gap-2.5 group mb-8">
+          <div className="p-2 bg-[#4F46E5] rounded-xl text-white shadow-md shadow-[#4F46E5]/20">
+            <Layers className="h-5 w-5" />
           </div>
-          <span className="text-2xl font-bold tracking-tight text-white">
-            Super<span className="text-brand-400">Scraper</span>
+          <span className="text-2xl font-bold tracking-tight text-slate-900">
+            Leadify
           </span>
         </Link>
-        <h2 className="text-center text-3xl font-extrabold text-white tracking-tight">
+        <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
           Skapa ett konto gratis
         </h2>
-        <p className="mt-2 text-center text-sm text-navy-400">
+        <p className="mt-2 text-center text-sm text-slate-500">
           Redan medlem?{' '}
-          <Link href="/login" className="font-semibold text-brand-400 hover:text-brand-300 transition-colors">
+          <Link href="/login" className="font-semibold text-[#4F46E5] hover:text-[#4338CA] transition-colors">
             Logga in här
           </Link>
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        <div className="bg-navy-900/60 backdrop-blur-md py-8 px-4 border border-navy-800 shadow-xl rounded-2xl sm:px-10">
+      {/* Form Card */}
+      <div className="w-full sm:max-w-md">
+        <div className="bg-white py-8 px-6 border border-[#F1F5F9] shadow-sm rounded-2xl sm:px-10">
           
           {success ? (
             <div className="py-6 text-center space-y-4">
-              <div className="inline-flex p-3 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20 mb-2">
+              <div className="inline-flex p-3 bg-[#ECFDF5] text-[#10B981] rounded-full border border-[#A7F3D0] mb-2">
                 <CheckCircle2 className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold text-white">Kontot skapat!</h3>
-              <p className="text-sm text-navy-300">
+              <h3 className="text-xl font-bold text-slate-900">Kontot skapat!</h3>
+              <p className="text-sm text-slate-500">
                 Registreringen lyckades. Vi omdirigerar dig till inloggningssidan...
               </p>
               <div className="flex justify-center pt-2">
-                <Loader2 className="h-5 w-5 animate-spin text-brand-405 text-brand-400" />
+                <Loader2 className="h-5 w-5 animate-spin text-[#4F46E5]" />
               </div>
             </div>
           ) : (
             <form className="space-y-4" onSubmit={handleSubmit}>
               {error && (
-                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm flex gap-2 items-center">
+                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-sm flex gap-2 items-center">
                   <AlertCircle className="h-4 w-4 shrink-0" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div>
-                <label htmlFor="fullName" className="block text-sm font-semibold text-navy-200 mb-1">
+                <label htmlFor="fullName" className="block text-sm font-semibold text-slate-700 mb-1.5">
                   Fullständigt namn *
                 </label>
                 <input
@@ -121,12 +120,12 @@ export default function SignupPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="t.ex. Johan Andersson"
-                  className="w-full px-4 py-2.5 bg-navy-950 border border-navy-850 rounded-xl text-white placeholder-navy-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm transition"
+                  className="w-full px-4 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] text-sm transition"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-navy-200 mb-1">
+                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5">
                   E-postadress *
                 </label>
                 <input
@@ -138,12 +137,12 @@ export default function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="namn@foretag.se"
-                  className="w-full px-4 py-2.5 bg-navy-950 border border-navy-850 rounded-xl text-white placeholder-navy-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm transition"
+                  className="w-full px-4 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] text-sm transition"
                 />
               </div>
 
               <div>
-                <label htmlFor="companyName" className="block text-sm font-semibold text-navy-200 mb-1">
+                <label htmlFor="companyName" className="block text-sm font-semibold text-slate-700 mb-1.5">
                   Företagsnamn (valfritt)
                 </label>
                 <input
@@ -153,12 +152,12 @@ export default function SignupPage() {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="t.ex. Företaget AB"
-                  className="w-full px-4 py-2.5 bg-navy-950 border border-navy-850 rounded-xl text-white placeholder-navy-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm transition"
+                  className="w-full px-4 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] text-sm transition"
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-navy-200 mb-1">
+                <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1.5">
                   Lösenord *
                 </label>
                 <input
@@ -169,7 +168,7 @@ export default function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minst 6 tecken"
-                  className="w-full px-4 py-2.5 bg-navy-950 border border-navy-850 rounded-xl text-white placeholder-navy-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm transition"
+                  className="w-full px-4 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] text-sm transition"
                 />
               </div>
 
@@ -177,7 +176,7 @@ export default function SignupPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-brand-500 to-brand-700 text-white hover:from-brand-400 hover:to-brand-600 shadow-md shadow-brand-500/10 hover:shadow-brand-500/20 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                  className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
                 >
                   {loading ? (
                     <>
@@ -190,10 +189,10 @@ export default function SignupPage() {
                 </button>
               </div>
 
-              <p className="text-center text-xs text-navy-500 mt-4 leading-relaxed">
+              <p className="text-center text-xs text-slate-400 mt-4 leading-relaxed">
                 Genom att registrera dig godkänner du våra{' '}
-                <Link href="/terms" className="underline hover:text-navy-300">Användarvillkor</Link> och{' '}
-                <Link href="/privacy" className="underline hover:text-navy-300">Integritetspolicy</Link>.
+                <Link href="/terms" className="underline hover:text-slate-600 text-slate-500">Användarvillkor</Link> och{' '}
+                <Link href="/privacy" className="underline hover:text-slate-600 text-slate-500">Integritetspolicy</Link>.
               </p>
             </form>
           )}

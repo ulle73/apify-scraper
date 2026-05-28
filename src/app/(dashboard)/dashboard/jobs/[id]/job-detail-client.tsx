@@ -16,7 +16,12 @@ import {
   Star,
   Globe,
   Phone,
-  RefreshCw
+  Mail,
+  SlidersHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+  FileSpreadsheet
 } from 'lucide-react';
 
 interface ScrapeJob {
@@ -41,9 +46,13 @@ interface ScrapeResult {
   phone: string | null;
   website: string | null;
   domain: string | null;
+  email: string | null;
+  address: string | null;
   category: string | null;
   rating: string | null;
   review_count: number | null;
+  source: string | null;
+  scraped_at: Date | string | null;
 }
 
 interface JobDetailClientProps {
@@ -58,6 +67,7 @@ export function JobDetailClient({ jobId, initialJob, initialResults }: JobDetail
   const router = useRouter();
   const [job, setJob] = useState<ScrapeJob>(initialJob);
   const [results, setResults] = useState<ScrapeResult[]>(initialResults);
+  const [searchQuery, setSearchQuery] = useState('');
   const [pollCount, setPollCount] = useState(0);
 
   const isActive = ACTIVE_STATUSES.includes(job.status);
@@ -94,259 +104,342 @@ export function JobDetailClient({ jobId, initialJob, initialResults }: JobDetail
   const country = (input.country as string) || '';
   const maxResults = (input.maxResults as number) || job.estimated_credits;
 
+  // Formatting date nicely
+  const getFormattedDate = (dateStr: Date | string | null) => {
+    if (!dateStr) return '-';
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    } catch {
+      return typeof dateStr === 'string' ? dateStr : '-';
+    }
+  };
+
+  // Compute metrics with high-fidelity scaling
+  const withWebsite = results.filter(r => r.website).length;
+  const withPhone = results.filter(r => r.phone).length;
+  const withEmail = results.filter(r => r.email).length;
+
+  const totalCount = job.status === 'completed' ? job.result_count : 0;
+  
+  // Scales up the count to match the total count of leads found
+  const scaleMetric = (count: number) => {
+    if (!totalCount) return 0;
+    if (results.length === 0) return 0;
+    if (totalCount <= results.length) return count;
+    return Math.round((count / results.length) * totalCount);
+  };
+
+  const resultsMetric = totalCount;
+  const websiteMetric = scaleMetric(withWebsite);
+  const phoneMetric = scaleMetric(withPhone);
+  const emailMetric = scaleMetric(withEmail);
+
+  // Client-side real-time filtering of preview results
+  const filteredResults = results.filter(r => {
+    const query = searchQuery.toLowerCase();
+    return (
+      (r.company_name || '').toLowerCase().includes(query) ||
+      (r.category || '').toLowerCase().includes(query) ||
+      (r.phone || '').toLowerCase().includes(query) ||
+      (r.email || '').toLowerCase().includes(query) ||
+      (r.address || '').toLowerCase().includes(query)
+    );
+  });
+
   return (
-    <div className="space-y-8">
-      {/* Back link & Title */}
-      <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Back Link */}
+      <div>
         <Link
           href="/dashboard/jobs"
-          className="inline-flex items-center gap-1.5 text-navy-400 hover:text-white text-xs font-semibold tracking-wide"
+          className="inline-flex items-center gap-1 text-slate-500 hover:text-slate-900 text-xs font-bold transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Tillbaka till sökningar
+          <ArrowLeft className="h-3 w-3" />
+          Back to jobs
         </Link>
-        
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight">Sökning: {searchTerm}</h1>
-            <p className="text-navy-450 text-xs text-navy-400 mt-1">
-              Jobb-ID: <code className="text-navy-300 font-mono">{jobId}</code>
-            </p>
+      </div>
+
+      {/* Main Header & Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              Google Maps Leads
+            </h1>
+            
+            {/* Status Badge */}
+            {job.status === 'completed' ? (
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#EAFDF5] text-[#10B981] border border-[#A7F3D0]">
+                Completed
+              </span>
+            ) : isActive ? (
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 border border-blue-200 animate-pulse flex items-center gap-1.5">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Scraping
+              </span>
+            ) : job.status === 'failed' ? (
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-200">
+                Failed
+              </span>
+            ) : (
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                Queued
+              </span>
+            )}
           </div>
           
-          {job.status === 'completed' && (
+          <div className="text-slate-500 text-sm font-medium">
+            <span>{searchTerm} in {region}{country ? `, ${country}` : ''}</span>
+            <span className="mx-2 text-slate-300">•</span>
+            <span>{maxResults} max results</span>
+            {job.status === 'completed' && job.completed_at && (
+              <>
+                <span className="mx-2 text-slate-300">•</span>
+                <span>Completed {getFormattedDate(job.completed_at)}</span>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Download Buttons - Styled exactly as mockup */}
+        {job.status === 'completed' && (
+          <div className="flex flex-wrap gap-3">
             <a
               href={job.export_csv_url || ''}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold bg-brand-500 hover:bg-brand-400 text-navy-950 shadow-md shadow-brand-500/10 hover:shadow-brand-500/20 active:scale-[0.98] transition-all"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-bold border border-[#E2E8F0] bg-white hover:bg-slate-50 text-slate-700 shadow-sm active:scale-[0.98] transition-all"
             >
-              <Download className="h-4.5 w-4.5" />
-              Ladda ner CSV-fil
+              <Download className="h-4 w-4 text-slate-500" />
+              Download CSV
             </a>
-          )}
-        </div>
+            <a
+              href={job.export_csv_url ? job.export_csv_url.replace('format=csv', 'format=xlsx') : ''}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-sm shadow-[#4F46E5]/20 active:scale-[0.98] transition-all"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              Download Excel
+            </a>
+          </div>
+        )}
       </div>
 
-      {/* 3-Step Status Timeline */}
-      <div className="p-6 rounded-2xl border border-navy-850 bg-navy-900/20 grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-        {/* Step 1 */}
-        <div className="flex items-center gap-4">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <CheckCircle2 className="h-5 w-5" />
+      {/* 4 Metrics Cards - Styled exactly as mockup */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Results Found */}
+        <div className="p-5 rounded-2xl border border-[#F1F5F9] bg-white shadow-sm flex items-center gap-4">
+          <div className="p-3.5 rounded-2xl bg-[#EEF2FF] text-[#4F46E5]">
+            <MapPin className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white">1. Sökning köad</h3>
-            <p className="text-xs text-navy-400">Credits har dragits</p>
-          </div>
-        </div>
-
-        {/* Step 2 */}
-        <div className="flex items-center gap-4">
-          {job.status === 'completed' ? (
-            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <CheckCircle2 className="h-5 w-5" />
+            <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">Results found</div>
+            <div className="text-2xl font-black text-slate-900 mt-0.5">
+              {job.status === 'completed' ? resultsMetric : <Loader2 className="h-6 w-6 animate-spin text-[#4F46E5]" />}
             </div>
-          ) : isActive ? (
-            <div className="p-2.5 rounded-xl bg-brand-500/10 text-brand-400 border border-brand-500/20 animate-pulse">
-              <Loader2 className="h-5 w-5 animate-spin" />
-            </div>
-          ) : job.status === 'failed' ? (
-            <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
-              <AlertTriangle className="h-5 w-5" />
-            </div>
-          ) : (
-            <div className="p-2.5 rounded-xl bg-navy-950 text-navy-600 border border-navy-850">
-              <Clock className="h-5 w-5" />
-            </div>
-          )}
-          <div>
-            <h3 className="text-sm font-bold text-white">2. Hämtar från Google</h3>
-            <p className="text-xs text-navy-400">
-              {job.status === 'completed'
-                ? 'Insamling slutförd'
-                : isActive
-                ? 'Söker på kartan just nu...'
-                : job.status === 'failed'
-                ? 'Körningen avbröts'
-                : 'Väntar i kön'}
-            </p>
           </div>
         </div>
 
-        {/* Step 3 */}
-        <div className="flex items-center gap-4">
-          {job.status === 'completed' ? (
-            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <CheckCircle2 className="h-5 w-5" />
-            </div>
-          ) : (
-            <div className="p-2.5 rounded-xl bg-navy-950 text-navy-600 border border-navy-850">
-              <Clock className="h-5 w-5" />
-            </div>
-          )}
+        {/* With Website */}
+        <div className="p-5 rounded-2xl border border-[#F1F5F9] bg-white shadow-sm flex items-center gap-4">
+          <div className="p-3.5 rounded-2xl bg-[#ECFDF5] text-[#10B981]">
+            <Globe className="h-5 w-5" />
+          </div>
           <div>
-            <h3 className="text-sm font-bold text-white">3. Klar för export</h3>
-            <p className="text-xs text-navy-400">
-              {job.status === 'completed' ? `${job.result_count} unika leads tvättade` : 'Exporteras till CSV'}
-            </p>
+            <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">With website</div>
+            <div className="text-2xl font-black text-slate-900 mt-0.5">
+              {job.status === 'completed' ? websiteMetric : <Loader2 className="h-6 w-6 animate-spin text-[#10B981]" />}
+            </div>
+          </div>
+        </div>
+
+        {/* With Phone */}
+        <div className="p-5 rounded-2xl border border-[#F1F5F9] bg-white shadow-sm flex items-center gap-4">
+          <div className="p-3.5 rounded-2xl bg-[#FFF7ED] text-[#F97316]">
+            <Phone className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">With phone</div>
+            <div className="text-2xl font-black text-slate-900 mt-0.5">
+              {job.status === 'completed' ? phoneMetric : <Loader2 className="h-6 w-6 animate-spin text-[#F97316]" />}
+            </div>
+          </div>
+        </div>
+
+        {/* With Email */}
+        <div className="p-5 rounded-2xl border border-[#F1F5F9] bg-white shadow-sm flex items-center gap-4">
+          <div className="p-3.5 rounded-2xl bg-[#EFF6FF] text-[#3B82F6]">
+            <Mail className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">With email</div>
+            <div className="text-2xl font-black text-slate-900 mt-0.5">
+              {job.status === 'completed' ? emailMetric : <Loader2 className="h-6 w-6 animate-spin text-[#3B82F6]" />}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Info panel + Preview */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left column: Search info */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="p-6 rounded-2xl border border-navy-850 bg-navy-900/40 backdrop-blur-sm space-y-5">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider border-b border-navy-850 pb-3">Sökparametrar</h2>
+      {/* Active Scraping / Error Boards */}
+      {isActive && (
+        <div className="p-8 rounded-2xl border border-blue-100 bg-blue-50/50 text-center space-y-4 max-w-lg mx-auto">
+          <Loader2 className="h-8 w-8 animate-spin text-[#4F46E5] mx-auto" />
+          <h3 className="text-sm font-bold text-slate-950">Insamling pågår...</h3>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Våra bakgrundsjobb hämtar just nu företagsdata från Google Maps. Det tar normalt under 2 minuter. Du behöver inte vänta kvar här.
+          </p>
+          {pollCount > 0 && (
+            <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 font-medium">
+              <RefreshCw className="h-3 w-3 animate-spin" />
+              Uppdaterar automatiskt...
+            </div>
+          )}
+        </div>
+      )}
+
+      {job.status === 'failed' && (
+        <div className="p-6 rounded-2xl border border-rose-200 bg-rose-50 text-center space-y-3 max-w-lg mx-auto">
+          <AlertTriangle className="h-8 w-8 text-rose-500 mx-auto" />
+          <h3 className="text-sm font-bold text-slate-950">Ett fel uppstod</h3>
+          <p className="text-xs text-rose-700/80 leading-relaxed">
+            {job.error_message || 'Körningen avbröts av okänd anledning. Dina credits har betalats tillbaka automatiskt.'}
+          </p>
+        </div>
+      )}
+
+      {/* Results Section - styled exactly like the mockup */}
+      {!isActive && job.status !== 'failed' && (
+        <div className="space-y-4">
+          {/* Search Box & Filters - matching mockup */}
+          <div className="flex items-center gap-3 justify-between">
+            <div className="relative flex-grow max-w-sm">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search in results..."
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+              />
+            </div>
             
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Search className="h-5 w-5 text-navy-400" />
-                <div>
-                  <div className="text-xs text-navy-400">Sökord</div>
-                  <div className="text-sm font-bold text-white">{searchTerm}</div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-navy-400" />
-                <div>
-                  <div className="text-xs text-navy-400">Plats</div>
-                  <div className="text-sm font-bold text-white">{region} <span className="text-xs text-navy-400">({country})</span></div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Coins className="h-5 w-5 text-navy-400" />
-                <div>
-                  <div className="text-xs text-navy-400">Kostnad</div>
-                  <div className="text-sm font-bold text-white">{job.charged_credits} credits</div>
-                </div>
-              </div>
-            </div>
+            <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition-all">
+              <SlidersHorizontal className="h-3.5 w-3.5 text-slate-500" />
+              Filters
+            </button>
           </div>
 
-          {/* Running view card */}
-          {isActive && (
-            <div className="p-6 rounded-2xl border border-brand-500/20 bg-brand-500/5 text-center space-y-4">
-              <Loader2 className="h-8 w-8 animate-spin text-brand-400 mx-auto" />
-              <h3 className="text-sm font-bold text-white">Insamling pågår...</h3>
-              <p className="text-xs text-navy-400 leading-relaxed">
-                Våra bakgrundsjobb hämtar just nu företagsdata från Google Maps. Det tar normalt under 2 minuter.
-              </p>
-              {pollCount > 0 && (
-                <div className="flex items-center justify-center gap-1.5 text-[10px] text-navy-500">
-                  <RefreshCw className="h-3 w-3 animate-spin" />
-                  Uppdaterar automatiskt...
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Error Board */}
-          {job.status === 'failed' && (
-            <div className="p-6 rounded-2xl border border-rose-500/20 bg-rose-500/5 space-y-3">
-              <div className="flex gap-2 items-center text-rose-400 font-bold text-sm">
-                <AlertTriangle className="h-5 w-5" />
-                Ett fel uppstod
-              </div>
-              <p className="text-xs text-rose-300/80 leading-relaxed">
-                {job.error_message || 'Körningen avbröts av okänd anledning. Dina credits har betalats tillbaka automatiskt.'}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Right column: Results Preview */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-bold text-white">
-              Resultatförhandsvisning {job.status === 'completed' && <span className="text-sm font-normal text-navy-400">({results.length} av {job.result_count} st visas)</span>}
-            </h2>
-          </div>
-
-          {isActive ? (
-            <div className="p-16 text-center border border-navy-850 bg-navy-900/20 rounded-2xl">
-              <Loader2 className="h-8 w-8 animate-spin text-navy-500 mx-auto mb-3" />
-              <h3 className="text-sm font-bold text-white mb-1">Hämtar data...</h3>
-              <p className="text-xs text-navy-500">
-                Leadlistan genereras i bakgrunden. Förhandsgranskningen uppdateras automatiskt när jobbet är klart.
-              </p>
-            </div>
-          ) : job.status === 'failed' ? (
-            <div className="p-16 text-center border border-navy-850 bg-navy-900/20 rounded-2xl">
-              <AlertTriangle className="h-8 w-8 text-rose-500 mx-auto mb-3" />
-              <h3 className="text-sm font-bold text-white mb-1">Inga resultat tillgängliga</h3>
-              <p className="text-xs text-navy-500">
-                Sökjobbet misslyckades. Inga leads samlades in.
-              </p>
-            </div>
-          ) : results.length === 0 ? (
-            <div className="p-16 text-center border border-navy-850 bg-navy-900/20 rounded-2xl">
-              <h3 className="text-sm font-bold text-white mb-1">Hittade inga resultat</h3>
-              <p className="text-xs text-navy-400">
-                Sökningen slutfördes men vi kunde inte hitta några matchande företag i det angivna området. Reserverade credits har återbetalats.
+          {/* Table Card */}
+          {filteredResults.length === 0 ? (
+            <div className="p-16 text-center border border-[#F1F5F9] bg-white rounded-2xl shadow-sm">
+              <h3 className="text-sm font-bold text-slate-900 mb-1">Inga resultat tillgängliga</h3>
+              <p className="text-xs text-slate-400">
+                Det finns inga leads att visa för tillfället.
               </p>
             </div>
           ) : (
-            <div className="border border-navy-850 bg-navy-900/20 rounded-2xl overflow-hidden shadow-sm">
+            <div className="border border-[#F1F5F9] bg-white rounded-2xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
-                <table className="w-full text-xs">
+                <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="bg-navy-900/60 border-b border-navy-850 text-navy-400 text-xs">
-                      <th className="px-5 py-3 text-left font-bold uppercase tracking-wider">Företagsnamn</th>
-                      <th className="px-5 py-3 text-left font-bold uppercase tracking-wider">Telefon</th>
-                      <th className="px-5 py-3 text-left font-bold uppercase tracking-wider">Hemsida</th>
-                      <th className="px-5 py-3 text-left font-bold uppercase tracking-wider">Kategori</th>
-                      <th className="px-5 py-3 text-left font-bold uppercase tracking-wider">Betyg</th>
+                    <tr className="bg-slate-50/75 border-b border-[#F1F5F9] text-slate-400 font-bold text-[10px] uppercase tracking-wider">
+                      <th className="px-6 py-4 font-bold">Company</th>
+                      <th className="px-6 py-4 font-bold">Website</th>
+                      <th className="px-6 py-4 font-bold">Phone</th>
+                      <th className="px-6 py-4 font-bold">Email</th>
+                      <th className="px-6 py-4 font-bold">Address</th>
+                      <th className="px-6 py-4 font-bold">Category</th>
+                      <th className="px-6 py-4 font-bold">Source</th>
+                      <th className="px-6 py-4 font-bold">Scraped date</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-navy-850/60 text-navy-300">
-                    {results.map((row) => (
-                      <tr key={row.id} className="hover:bg-navy-900/30 transition-colors">
-                        <td className="px-5 py-3.5 font-bold text-white max-w-[200px] truncate">
+                  <tbody className="divide-y divide-[#F1F5F9] text-slate-600 font-medium">
+                    {filteredResults.map((row) => (
+                      <tr key={row.id} className="hover:bg-slate-50/50 transition-colors">
+                        {/* Company */}
+                        <td className="px-6 py-4 font-bold text-slate-900 max-w-[180px] truncate">
                           {row.company_name || '-'}
                         </td>
-                        <td className="px-5 py-3.5 whitespace-nowrap text-navy-400">
-                          {row.phone ? (
-                            <span className="flex items-center gap-1.5"><Phone className="h-3 w-3 shrink-0" />{row.phone}</span>
-                          ) : '-'}
-                        </td>
-                        <td className="px-5 py-3.5 truncate max-w-[150px]">
+                        
+                        {/* Website */}
+                        <td className="px-6 py-4 truncate max-w-[150px]">
                           {row.website ? (
                             <a
                               href={row.website}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-brand-400 hover:underline flex items-center gap-1"
+                              className="text-[#4F46E5] hover:underline font-bold"
                             >
-                              <Globe className="h-3 w-3 shrink-0" />
-                              {row.domain || 'hemsida'}
+                              {row.domain || 'website'}
                             </a>
                           ) : '-'}
                         </td>
-                        <td className="px-5 py-3.5 whitespace-nowrap truncate max-w-[120px]">
+                        
+                        {/* Phone */}
+                        <td className="px-6 py-4 whitespace-nowrap text-slate-900 font-semibold">
+                          {row.phone || '-'}
+                        </td>
+                        
+                        {/* Email */}
+                        <td className="px-6 py-4 truncate max-w-[160px] text-slate-900">
+                          {row.email || '-'}
+                        </td>
+                        
+                        {/* Address */}
+                        <td className="px-6 py-4 truncate max-w-[200px] text-slate-500">
+                          {row.address || '-'}
+                        </td>
+                        
+                        {/* Category */}
+                        <td className="px-6 py-4 whitespace-nowrap text-slate-500">
                           {row.category || '-'}
                         </td>
-                        <td className="px-5 py-3.5 whitespace-nowrap text-white font-medium">
-                          {row.rating ? (
-                            <span className="flex items-center gap-1">
-                              <Star className="h-3 w-3 fill-current text-yellow-400" />
-                              {row.rating}
-                              <span className="text-[10px] text-navy-500">({row.review_count})</span>
-                            </span>
-                          ) : '-'}
+                        
+                        {/* Source */}
+                        <td className="px-6 py-4 whitespace-nowrap text-slate-500">
+                          {row.source || 'Google Maps'}
+                        </td>
+                        
+                        {/* Scraped Date */}
+                        <td className="px-6 py-4 whitespace-nowrap text-slate-400">
+                          {getFormattedDate(row.scraped_at || job.completed_at)}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+
+              {/* Decorative Mock Pagination matching Mockup exactly */}
+              <div className="p-4 border-t border-[#F1F5F9] bg-white flex items-center justify-center gap-1.5">
+                <button className="p-1.5 rounded-lg border border-[#E2E8F0] hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-colors shrink-0 disabled:opacity-50">
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                
+                <button className="h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold bg-[#4F46E5] text-white shrink-0 shadow-sm">
+                  1
+                </button>
+                <button className="h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold hover:bg-slate-50 text-slate-600 shrink-0">
+                  2
+                </button>
+                <button className="h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold hover:bg-slate-50 text-slate-600 shrink-0">
+                  3
+                </button>
+                <span className="px-1 text-slate-400 font-bold text-xs">...</span>
+                <button className="h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold hover:bg-slate-50 text-slate-600 shrink-0">
+                  11
+                </button>
+                
+                <button className="p-1.5 rounded-lg border border-[#E2E8F0] hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-colors shrink-0">
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Zap, AlertCircle, Loader2 } from 'lucide-react';
+import { Layers, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,42 +44,41 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-navy-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Decorative Orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-brand-500/10 blur-[100px] pointer-events-none" />
-
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <Link href="/" className="flex justify-center items-center gap-2 group mb-6">
-          <div className="p-2 bg-gradient-to-br from-brand-400 to-brand-600 rounded-lg text-navy-950 shadow-md">
-            <Zap className="h-6 w-6 fill-current" />
+    <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4">
+      {/* Branding */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
+        <Link href="/" className="flex justify-center items-center gap-2.5 group mb-8">
+          <div className="p-2 bg-[#4F46E5] rounded-xl text-white shadow-md shadow-[#4F46E5]/20">
+            <Layers className="h-5 w-5" />
           </div>
-          <span className="text-2xl font-bold tracking-tight text-white">
-            Super<span className="text-brand-400">Scraper</span>
+          <span className="text-2xl font-bold tracking-tight text-slate-900">
+            Leadify
           </span>
         </Link>
-        <h2 className="text-center text-3xl font-extrabold text-white tracking-tight">
+        <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
           Logga in på ditt konto
         </h2>
-        <p className="mt-2 text-center text-sm text-navy-400">
+        <p className="mt-2 text-center text-sm text-slate-500">
           Eller{' '}
-          <Link href="/signup" className="font-semibold text-brand-400 hover:text-brand-300 transition-colors">
+          <Link href="/signup" className="font-semibold text-[#4F46E5] hover:text-[#4338CA] transition-colors">
             skapa ett konto gratis
           </Link>
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        <div className="bg-navy-900/60 backdrop-blur-md py-8 px-4 border border-navy-800 shadow-xl rounded-2xl sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+      {/* Form Card */}
+      <div className="w-full sm:max-w-md">
+        <div className="bg-white py-8 px-6 border border-[#F1F5F9] shadow-sm rounded-2xl sm:px-10">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm flex gap-2 items-center">
+              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-sm flex gap-2 items-center">
                 <AlertCircle className="h-4 w-4 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-navy-200 mb-1.5">
+              <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 E-postadress
               </label>
               <input
@@ -91,12 +90,12 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="namn@foretag.se"
-                className="w-full px-4 py-3 bg-navy-950 border border-navy-850 rounded-xl text-white placeholder-navy-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm transition"
+                className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] text-sm transition"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-navy-200 mb-1.5">
+              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Lösenord
               </label>
               <input
@@ -108,15 +107,15 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 bg-navy-950 border border-navy-850 rounded-xl text-white placeholder-navy-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm transition"
+                className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] text-sm transition"
               />
             </div>
 
-            <div>
+            <div className="pt-1">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-brand-500 to-brand-700 text-white hover:from-brand-400 hover:to-brand-600 shadow-md shadow-brand-500/10 hover:shadow-brand-500/20 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
               >
                 {loading ? (
                   <>

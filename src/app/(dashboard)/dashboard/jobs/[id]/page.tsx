@@ -44,6 +44,10 @@ export default async function JobDetailPage(context: { params: Promise<{ id: str
           category: scrapeResults.category,
           rating: scrapeResults.rating,
           review_count: scrapeResults.review_count,
+          email: scrapeResults.email,
+          address: scrapeResults.address,
+          source: scrapeResults.source,
+          scraped_at: scrapeResults.scraped_at,
         })
         .from(scrapeResults)
         .where(and(eq(scrapeResults.job_id, id), eq(scrapeResults.user_id, userId as string)))

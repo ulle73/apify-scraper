@@ -46,6 +46,10 @@ export const GET = auth(async (req, context) => {
           category: scrapeResults.category,
           rating: scrapeResults.rating,
           review_count: scrapeResults.review_count,
+          email: scrapeResults.email,
+          address: scrapeResults.address,
+          source: scrapeResults.source,
+          scraped_at: scrapeResults.scraped_at,
         })
         .from(scrapeResults)
         .where(eq(scrapeResults.job_id, id))
