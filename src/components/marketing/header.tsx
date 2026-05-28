@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { Zap, Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
 
 export default function Header() {
   const { data: session } = useSession();
@@ -26,58 +26,62 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-navy-950/80 backdrop-blur-md border-b border-navy-800 py-4 shadow-lg'
-          : 'bg-transparent py-6'
+          ? 'bg-white/80 backdrop-blur-md border-b border-slate-100 py-3.5 shadow-sm'
+          : 'bg-transparent py-5'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-gradient-to-br from-brand-400 to-brand-600 rounded-lg text-navy-950 shadow-md group-hover:scale-105 transition-transform duration-200">
-              <Zap className="h-5 w-5 fill-current" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="relative text-violet-600 group-hover:scale-105 transition-transform duration-200">
+              <svg className="h-6.5 w-6.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" fill="rgba(99, 102, 241, 0.15)" />
+                <path d="M2 17l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </div>
-            <span className="text-xl font-bold tracking-tight text-white">
-              Super<span className="text-brand-400">Scraper</span>
+            <span className="text-xl font-black tracking-tight text-slate-900">
+              Leadify
             </span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             <Link
-              href="/#how-it-works"
-              className="text-navy-300 hover:text-white transition-colors duration-200 text-sm font-medium"
+              href="/#popular-scrapers"
+              className="text-slate-600 hover:text-slate-900 transition-colors duration-200 text-sm font-semibold"
             >
-              Så fungerar det
+              Scrapers
             </Link>
             <Link
               href="/pricing"
-              className="text-navy-300 hover:text-white transition-colors duration-200 text-sm font-medium"
+              className="text-slate-600 hover:text-slate-900 transition-colors duration-200 text-sm font-semibold"
             >
-              Priser
+              Pricing
             </Link>
             <Link
-              href="/compliance"
-              className="text-navy-300 hover:text-white transition-colors duration-200 text-sm font-medium"
+              href="/#how-it-works"
+              className="text-slate-600 hover:text-slate-900 transition-colors duration-200 text-sm font-semibold"
             >
-              GDPR & Användning
+              How it works
             </Link>
           </nav>
 
           {/* Desktop CTAs */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-5">
             {session ? (
               <>
                 <Link
                   href="/dashboard"
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-navy-200 hover:text-white transition-colors duration-200"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition"
                 >
-                  <LayoutDashboard className="h-4 w-4" />
+                  <LayoutDashboard className="h-4 w-4 text-violet-500" />
                   Dashboard
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-navy-800 text-navy-200 hover:bg-navy-700 hover:text-white transition-all duration-200"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-all duration-200"
                 >
                   <LogOut className="h-4 w-4" />
                   Logga ut
@@ -87,15 +91,15 @@ export default function Header() {
               <>
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-sm font-medium text-navy-300 hover:text-white transition-colors duration-200"
+                  className="px-3 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors duration-200"
                 >
-                  Logga in
+                  Log in
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-5 py-2.5 rounded-lg text-sm font-medium bg-gradient-to-r from-brand-500 to-brand-700 text-white hover:from-brand-400 hover:to-brand-600 shadow-md shadow-brand-500/10 hover:shadow-brand-500/20 hover:scale-[1.02] transition-all duration-200"
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold bg-violet-600 text-white hover:bg-violet-750 shadow-md shadow-violet-500/10 hover:shadow-violet-500/20 hover:scale-[1.01] transition-all duration-200"
                 >
-                  Kom igång gratis
+                  Get started
                 </Link>
               </>
             )}
@@ -105,7 +109,7 @@ export default function Header() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-navy-400 hover:text-white hover:bg-navy-800 transition-colors"
+              className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -115,38 +119,38 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-navy-900 border-b border-navy-800 py-6 px-4 shadow-xl">
-          <nav className="flex flex-col gap-4 mb-6">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-100 py-5 px-6 shadow-lg animate-float-3">
+          <nav className="flex flex-col gap-3 mb-5">
             <Link
-              href="/#how-it-works"
+              href="/#popular-scrapers"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-navy-300 hover:text-white py-2 text-base font-medium"
+              className="text-slate-600 hover:text-slate-900 py-1.5 text-base font-semibold"
             >
-              Så fungerar det
+              Scrapers
             </Link>
             <Link
               href="/pricing"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-navy-300 hover:text-white py-2 text-base font-medium"
+              className="text-slate-600 hover:text-slate-900 py-1.5 text-base font-semibold"
             >
-              Priser
+              Pricing
             </Link>
             <Link
-              href="/compliance"
+              href="/#how-it-works"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-navy-300 hover:text-white py-2 text-base font-medium"
+              className="text-slate-600 hover:text-slate-900 py-1.5 text-base font-semibold"
             >
-              GDPR & Användning
+              How it works
             </Link>
           </nav>
 
-          <div className="flex flex-col gap-3 pt-4 border-t border-navy-800">
+          <div className="flex flex-col gap-2.5 pt-4 border-t border-slate-100">
             {session ? (
               <>
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-base font-medium bg-gradient-to-r from-brand-500 to-brand-700 text-white"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-base font-semibold bg-violet-50 text-violet-600"
                 >
                   <LayoutDashboard className="h-5 w-5" />
                   Gå till Dashboard
@@ -156,7 +160,7 @@ export default function Header() {
                     setMobileMenuOpen(false);
                     signOut({ callbackUrl: '/' });
                   }}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-base font-medium bg-navy-800 text-navy-200"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-base font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200"
                 >
                   <LogOut className="h-5 w-5" />
                   Logga ut
@@ -167,16 +171,16 @@ export default function Header() {
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center w-full py-2.5 rounded-lg text-base font-medium bg-navy-800 text-navy-200"
+                  className="flex items-center justify-center w-full py-2.5 rounded-xl text-base font-semibold bg-slate-50 text-slate-700"
                 >
-                  Logga in
+                  Log in
                 </Link>
                 <Link
                   href="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center w-full py-2.5 rounded-lg text-base font-medium bg-gradient-to-r from-brand-500 to-brand-700 text-white"
+                  className="flex items-center justify-center w-full py-2.5 rounded-xl text-base font-bold bg-violet-600 text-white"
                 >
-                  Skapa konto gratis
+                  Get started
                 </Link>
               </>
             )}

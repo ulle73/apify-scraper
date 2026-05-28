@@ -85,3 +85,30 @@ body {
 .animate-pulse-slow {
   animation: pulse-slow 8s infinite ease-in-out;
 }
+
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(12px) rotate(-1.5deg); }
+}
+
+@keyframes float-3 {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(-8px) translateX(8px); }
+}
+
+.animate-float-1 {
+  animation: float-1 6s infinite ease-in-out;
+}
+
+.animate-float-2 {
+  animation: float-2 7s infinite ease-in-out;
+}
+
+.animate-float-3 {
+  animation: float-3 5s infinite ease-in-out;
+}
