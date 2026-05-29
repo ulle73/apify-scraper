@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
-  MapPin, 
-  Search, 
   Coins, 
   Sparkles,
   HelpCircle,
@@ -14,49 +12,88 @@ import {
   ChevronLeft,
   ArrowRight,
   ShieldCheck,
-  CreditCard
+  CreditCard,
+  Search,
+  Filter
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import { getEnabledAdapters } from '@/lib/scrapers/registry';
+import { ScraperAdapter } from '@/lib/scrapers/types';
 
 interface CreateClientProps {
   initialBalance: number;
 }
 
+function ScraperIcon({ name, className }: { name: string; className?: string }) {
+  const IconComponent = (LucideIcons as any)[name];
+  if (!IconComponent) {
+    return <LucideIcons.HelpCircle className={className} />;
+  }
+  return <IconComponent className={className} />;
+}
+
 export default function CreateClient({ initialBalance }: CreateClientProps) {
   const router = useRouter();
-  
-  // Stage state: 'config' or 'review'
-  const [stage, setStage] = useState<'config' | 'review'>('config');
+  const enabledScrapers = getEnabledAdapters();
 
-  // Form fields
-  const [country, setCountry] = useState('Sverige');
-  const [region, setRegion] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [maxResults, setMaxResults] = useState(100);
-  const [language, setLanguage] = useState('English');
+  // Stage state: 'catalog' | 'config' | 'review'
+  const [stage, setStage] = useState<'catalog' | 'config' | 'review'>('catalog');
+  const [selectedScraper, setSelectedScraper] = useState<ScraperAdapter | null>(null);
+  
+  // Dynamic form state
+  const [formValues, setFormValues] = useState<Record<string, any>>({});
+  
+  // Catalog search and filter
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   // Status states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Cost estimates: 1 credit per lead
-  const estimatedCredits = maxResults;
-  
-  // Dynamic time estimate
+  const handleSelectScraper = (scraper: ScraperAdapter) => {
+    setSelectedScraper(scraper);
+    const initialValues: Record<string, any> = {};
+    scraper.fields.forEach(field => {
+      initialValues[field.name] = field.defaultValue !== undefined ? field.defaultValue : '';
+    });
+    setFormValues(initialValues);
+    setError(null);
+    setStage('config');
+  };
+
+  // Cost estimates
+  const getEstimatedCredits = () => {
+    if (!selectedScraper) return 0;
+    return selectedScraper.creditEstimate(formValues);
+  };
+
   const getEstimatedTime = () => {
-    if (maxResults <= 100) return '1-2 min';
-    if (maxResults <= 500) return '2-4 min';
+    if (!selectedScraper) return '1-2 min';
+    // Find limit/results count
+    const limitField = selectedScraper.fields.find(f => f.name === 'maxResults' || f.name === 'resultsLimit' || f.name === 'limit');
+    const limitVal = limitField ? Number(formValues[limitField.name]) || 50 : 50;
+    
+    if (limitVal <= 50) return '1-2 min';
+    if (limitVal <= 200) return '2-3 min';
     return '3-5 min';
   };
 
-  const handleContinueToPayment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!region || !searchTerm) {
-      setError('Vänligen fyll i både region/stad och sökord.');
-      return;
-    }
+  const handleInputChange = (fieldName: string, value: any) => {
+    setFormValues(prev => ({
+      ...prev,
+      [fieldName]: value
+    }));
+  };
 
-    if (maxResults < 10 || maxResults > 1000) {
-      setError('Max antal leads måste vara mellan 10 och 1000.');
+  const handleContinueToReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedScraper) return;
+
+    // Validate inputs using adapter
+    const validation = selectedScraper.validateInput(formValues);
+    if (!validation.success) {
+      setError(validation.error || 'Kontrollera dina ifyllda uppgifter.');
       return;
     }
 
@@ -65,8 +102,11 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
   };
 
   const handlePayWithCredits = async () => {
-    if (initialBalance < estimatedCredits) {
-      setError(`Otillräckliga credits. Du behöver ${estimatedCredits} credits, men ditt saldo är ${initialBalance}.`);
+    if (!selectedScraper) return;
+    const cost = getEstimatedCredits();
+
+    if (initialBalance < cost) {
+      setError(`Otillräckliga credits. Du behöver ${cost} credits, men ditt saldo är ${initialBalance}.`);
       setStage('config');
       return;
     }
@@ -81,14 +121,8 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          scraperId: 'google-maps',
-          input: {
-            country,
-            region: region.trim(),
-            searchTerm: searchTerm.trim(),
-            maxResults: Number(maxResults),
-            language,
-          },
+          scraperId: selectedScraper.id,
+          input: formValues,
         }),
       });
 
@@ -108,27 +142,143 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
     }
   };
 
+  // Filtered scrapers list
+  const filteredScrapers = enabledScrapers.filter(scraper => {
+    const matchesSearch = scraper.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          scraper.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || scraper.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const categories = [
+    { id: 'all', label: 'Alla' },
+    { id: 'leads', label: 'Leads' },
+    { id: 'social', label: 'Sociala Medier' },
+    { id: 'search', label: 'Sök' },
+    { id: 'content', label: 'Innehåll' },
+    { id: 'ecommerce', label: 'E-handel' },
+  ];
+
   return (
-    <div className="max-w-xl mx-auto py-4">
-      {/* Configuration Stage */}
-      {stage === 'config' && (
+    <div className="max-w-4xl mx-auto py-4 font-sans">
+      
+      {/* 1. CATALOG STAGE */}
+      {stage === 'catalog' && (
         <div className="space-y-6">
-          {/* Header with Google Maps G icon */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-                Google Maps Leads
-              </h1>
-              <p className="text-slate-500 text-sm">
-                Extract businesses from Google Maps with contact details.
-              </p>
+          <div className="space-y-1">
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              Skapa ny sökning
+            </h1>
+            <p className="text-slate-500 text-sm">
+              Välj en scraper nedan för att påbörja din datainsamling.
+            </p>
+          </div>
+
+          {/* Search & Filter Header */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Sök bland tillgängliga scrapers..."
+                className="w-full pl-10 pr-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+              />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
             </div>
-            {/* Google Maps Styled Icon Pin Box */}
-            <div className="h-16 w-16 bg-white border border-[#E2E8F0] rounded-2xl flex items-center justify-center shadow-sm shrink-0">
-              <svg viewBox="0 0 24 24" className="h-9 w-9">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4285F4"/>
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 1.9 1.05 4.3 2.72 7.02l4.28 5.48 4.28-5.48C17.95 13.3 19 10.9 19 9c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#34A853" opacity="0.3"/>
-              </svg>
+
+            {/* Category selection */}
+            <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+              {categories.map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                    selectedCategory === cat.id
+                      ? 'bg-slate-900 border-slate-900 text-white shadow-sm'
+                      : 'bg-white border-[#E2E8F0] text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Grid list of scrapers */}
+          {filteredScrapers.length === 0 ? (
+            <div className="text-center py-16 bg-white border border-slate-100 rounded-2xl shadow-sm">
+              <div className="h-12 w-12 bg-slate-50 text-slate-400 flex items-center justify-center rounded-full mx-auto mb-3">
+                <Search className="h-6 w-6" />
+              </div>
+              <h3 className="text-sm font-bold text-slate-900 mb-1">Hittade inga scrapers</h3>
+              <p className="text-xs text-slate-400">Försök söka med en annan term eller byt kategori.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+              {filteredScrapers.map(scraper => (
+                <button
+                  key={scraper.id}
+                  onClick={() => handleSelectScraper(scraper)}
+                  className="w-full text-left bg-white rounded-2xl border border-[#F1F5F9] p-5 shadow-sm hover:shadow-md hover:border-violet-200 transition-all duration-200 flex flex-col justify-between group"
+                >
+                  <div className="flex gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-violet-50 text-violet-600 border border-violet-100 flex items-center justify-center shadow-sm shrink-0">
+                      <ScraperIcon name={scraper.icon || 'HelpCircle'} className="h-6 w-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-extrabold text-slate-900 group-hover:text-violet-600 transition-colors">
+                        {scraper.name}
+                      </h3>
+                      <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                        {scraper.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-50 w-full text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    <span className="bg-slate-50 px-2 py-1 rounded border border-slate-100/50">
+                      {scraper.category}
+                    </span>
+                    <div className="flex items-center gap-1 text-slate-500 font-extrabold group-hover:text-violet-600 transition-colors">
+                      Välj
+                      <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 2. CONFIGURATION STAGE */}
+      {stage === 'config' && selectedScraper && (
+        <div className="max-w-xl mx-auto space-y-6">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setStage('catalog')}
+                className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <div className="space-y-0.5">
+                <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+                  {selectedScraper.name}
+                </h1>
+                <p className="text-slate-500 text-xs font-semibold">
+                  {selectedScraper.description}
+                </p>
+              </div>
+            </div>
+            {/* Scraper Icon Box */}
+            <div className="h-14 w-14 bg-white border border-[#E2E8F0] rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-violet-50 text-violet-600 border border-violet-100 flex items-center justify-center shadow-sm">
+                <ScraperIcon name={selectedScraper.icon || 'HelpCircle'} className="h-5 w-5" />
+              </div>
             </div>
           </div>
 
@@ -140,92 +290,78 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
           )}
 
           {/* Form */}
-          <form onSubmit={handleContinueToPayment} className="space-y-5">
-            {/* Search term */}
-            <div className="space-y-1.5">
-              <label htmlFor="searchTerm" className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Search term
-              </label>
-              <div className="relative">
-                <input
-                  id="searchTerm"
-                  type="text"
-                  required
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="e.g. Coffee shops, restaurants, dentists"
-                  className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
-                />
-                <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
-              </div>
-            </div>
-
-            {/* Location */}
-            <div className="space-y-1.5">
-              <label htmlFor="region" className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Location
-              </label>
-              <div className="relative">
-                <input
-                  id="region"
-                  type="text"
-                  required
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                  placeholder="e.g. Stockholm, Sweden"
-                  className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
-                />
-                <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
-              </div>
-            </div>
-
-            {/* Max results & Language split */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label htmlFor="maxResults" className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  Max results
+          <form onSubmit={handleContinueToReview} className="space-y-5">
+            
+            {/* Dynamic Inputs Builder */}
+            {selectedScraper.fields.map((field) => (
+              <div key={field.name} className="space-y-1.5">
+                <label htmlFor={field.name} className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  {field.label} {field.required && <span className="text-rose-500">*</span>}
                 </label>
-                <select
-                  id="maxResults"
-                  value={maxResults}
-                  onChange={(e) => setMaxResults(Number(e.target.value))}
-                  className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
-                >
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                  <option value="250">250</option>
-                  <option value="500">500</option>
-                  <option value="1000">1000</option>
-                </select>
+                {field.description && (
+                  <p className="text-slate-400 text-[11px] font-semibold mt-0.5 leading-relaxed">{field.description}</p>
+                )}
+                
+                {field.type === 'textarea' ? (
+                  <textarea
+                    id={field.name}
+                    required={field.required}
+                    value={formValues[field.name] === undefined ? '' : formValues[field.name]}
+                    onChange={(e) => handleInputChange(field.name, e.target.value)}
+                    placeholder={field.placeholder}
+                    rows={4}
+                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+                  />
+                ) : field.type === 'select' ? (
+                  <select
+                    id={field.name}
+                    required={field.required}
+                    value={formValues[field.name] === undefined ? '' : formValues[field.name]}
+                    onChange={(e) => handleInputChange(field.name, e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+                  >
+                    {field.options?.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : field.type === 'checkbox' ? (
+                  <div className="flex items-center gap-2.5 py-1">
+                    <input
+                      id={field.name}
+                      type="checkbox"
+                      checked={!!formValues[field.name]}
+                      onChange={(e) => handleInputChange(field.name, e.target.checked)}
+                      className="h-4 w-4 text-[#4F46E5] border-slate-300 rounded focus:ring-[#4F46E5]"
+                    />
+                    <span className="text-sm font-semibold text-slate-700">{field.placeholder || field.label}</span>
+                  </div>
+                ) : (
+                  <input
+                    id={field.name}
+                    type={field.type}
+                    required={field.required}
+                    min={field.min}
+                    max={field.max}
+                    value={formValues[field.name] === undefined ? '' : formValues[field.name]}
+                    onChange={(e) => handleInputChange(field.name, field.type === 'number' ? Number(e.target.value) : e.target.value)}
+                    placeholder={field.placeholder}
+                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+                  />
+                )}
               </div>
+            ))}
 
-              <div className="space-y-1.5">
-                <label htmlFor="language" className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  Language
-                </label>
-                <select
-                  id="language"
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
-                >
-                  <option value="English">English</option>
-                  <option value="Swedish">Swedish</option>
-                  <option value="German">German</option>
-                  <option value="Spanish">Spanish</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Mini stats boxes */}
+            {/* Dynamic Cost Stats */}
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="p-4 rounded-xl border border-[#F1F5F9] bg-[#F8F9FA] space-y-1">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Estimated credits</div>
-                <div className="text-sm font-extrabold text-slate-900">{estimatedCredits} credits</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Beräknad kostnad</div>
+                <div className="text-sm font-extrabold text-slate-900">{getEstimatedCredits()} credits</div>
               </div>
               
               <div className="p-4 rounded-xl border border-[#F1F5F9] bg-[#F8F9FA] space-y-1">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Estimated time</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Uppskattad tid</div>
                 <div className="text-sm font-extrabold text-slate-900">{getEstimatedTime()}</div>
               </div>
             </div>
@@ -236,7 +372,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                 type="submit"
                 className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 active:scale-[0.99] transition-all"
               >
-                Continue to payment
+                Gå vidare till granskning
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
@@ -244,9 +380,9 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
         </div>
       )}
 
-      {/* Review & Pay Stage */}
-      {stage === 'review' && (
-        <div className="space-y-6">
+      {/* 3. REVIEW & PAY STAGE */}
+      {stage === 'review' && selectedScraper && (
+        <div className="max-w-xl mx-auto space-y-6">
           {/* Header */}
           <div className="flex items-center gap-2.5">
             <button
@@ -256,7 +392,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
               <ChevronLeft className="h-5 w-5" />
             </button>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              Review & pay
+              Granska & Bekräfta
             </h1>
           </div>
 
@@ -271,30 +407,32 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
           <div className="p-6 rounded-2xl border border-[#F1F5F9] bg-white shadow-sm space-y-5">
             {/* Header info */}
             <div className="flex items-center gap-3 pb-5 border-b border-[#F1F5F9]">
-              {/* Logo icon */}
               <div className="h-12 w-12 bg-slate-50 border border-[#E2E8F0] rounded-xl flex items-center justify-center shrink-0">
-                <svg viewBox="0 0 24 24" className="h-6 w-6">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4285F4"/>
-                </svg>
+                <ScraperIcon name={selectedScraper.icon || 'HelpCircle'} className="h-6 w-6 text-slate-800" />
               </div>
               <div className="space-y-0.5">
-                <h3 className="text-sm font-bold text-slate-900">Google Maps Leads</h3>
-                <p className="text-xs text-slate-400 font-semibold">{searchTerm} in {region}</p>
+                <h3 className="text-sm font-bold text-slate-900">{selectedScraper.name}</h3>
+                <p className="text-xs text-slate-400 font-semibold truncate max-w-[240px]">
+                  {Object.entries(formValues)
+                    .filter(([key]) => key !== 'queries' && key !== 'urls' && key !== 'companies' && key !== 'searchQueries')
+                    .map(([key, val]) => `${key}: ${val}`)
+                    .join(', ') || selectedScraper.description}
+                </p>
               </div>
               <div className="ml-auto text-sm font-extrabold text-slate-900">
-                {estimatedCredits} credits
+                {getEstimatedCredits()} credits
               </div>
             </div>
 
             {/* Calculations */}
             <div className="space-y-3.5 pb-5 border-b border-[#F1F5F9] text-xs font-bold text-slate-500">
               <div className="flex justify-between">
-                <span>Total</span>
-                <span className="text-slate-900 font-extrabold">{estimatedCredits} credits</span>
+                <span>Total kostnad</span>
+                <span className="text-slate-900 font-extrabold">{getEstimatedCredits()} credits</span>
               </div>
               <div className="flex justify-between">
-                <span>Your balance</span>
-                <span className={initialBalance >= estimatedCredits ? 'text-emerald-500 font-extrabold' : 'text-rose-500 font-extrabold'}>
+                <span>Ditt credit-saldo</span>
+                <span className={initialBalance >= getEstimatedCredits() ? 'text-emerald-500 font-extrabold' : 'text-rose-500 font-extrabold'}>
                   {initialBalance} credits
                 </span>
               </div>
@@ -304,23 +442,23 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
             <div className="space-y-3 pt-2">
               <button
                 onClick={handlePayWithCredits}
-                disabled={loading || initialBalance < estimatedCredits}
+                disabled={loading || initialBalance < getEstimatedCredits()}
                 className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all duration-200"
               >
                 {loading ? (
                   <>
                     <Loader2 className="h-4.5 w-4.5 animate-spin" />
-                    Processing...
+                    Startar insamling...
                   </>
                 ) : (
                   <>
-                    Pay with credits
+                    Betala med credits & starta
                   </>
                 )}
               </button>
 
               <div className="flex items-center justify-center my-1.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-white px-3 relative z-10">or</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-white px-3 relative z-10">eller</span>
                 <div className="w-full h-px bg-[#F1F5F9] absolute"></div>
               </div>
 
@@ -329,14 +467,14 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                 className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 active:scale-[0.99] transition-all"
               >
                 <CreditCard className="h-4 w-4 text-slate-500" />
-                Pay with card
+                Köp fler credits
               </Link>
             </div>
 
             {/* Security stamp */}
             <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 font-bold uppercase tracking-wider pt-2">
               <ShieldCheck className="h-4.5 w-4.5 text-slate-400" />
-              Secure payment
+              Säker transaktion
             </div>
           </div>
         </div>

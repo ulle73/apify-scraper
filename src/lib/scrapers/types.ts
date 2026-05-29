@@ -64,4 +64,5 @@ export interface ScraperAdapter {
   buildApifyInput(input: ParsedInput): Record<string, unknown>;
   normalizeItem(item: Record<string, unknown>): NormalizedScrapeResult;
   getExportColumns(): ExportColumn[];
+  getMockData?: (maxResults: number) => Record<string, unknown>[];
 }

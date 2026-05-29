@@ -51,8 +51,15 @@ export async function processJob(jobId: string): Promise<void> {
       await sleep(3000);
       
       const input = job.input_json as Record<string, unknown>;
-      const maxResults = typeof input.maxResults === 'number' ? input.maxResults : 100;
-      rawItems = getMockLeads(maxResults);
+      // Find results limit or count in input
+      const limitVal = input.maxResults || input.resultsLimit || input.limit || 50;
+      const maxResults = typeof limitVal === 'string' ? parseInt(limitVal, 10) : Number(limitVal);
+      
+      if (adapter.getMockData) {
+        rawItems = adapter.getMockData(maxResults);
+      } else {
+        rawItems = getMockLeads(maxResults);
+      }
     } else {
       console.log(`processJob: Startar real Apify actor för jobb ${jobId}`);
       if (!job.apify_actor_id) {
