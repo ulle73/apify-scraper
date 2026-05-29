@@ -26,7 +26,7 @@ export default function HomePage() {
   return (
     <div className="relative overflow-hidden bg-[#f9fafc] text-slate-800 min-h-screen">
       {/* Decorative Orbs */}
-      <div className="absolute top-[-10%] left-[-20%] w-[600px] h-[600px] rounded-full bg-violet-200/40 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-20%] w-[600px] h-[600px] rounded-full bg-blue-200/40 blur-[120px] pointer-events-none" />
       <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] rounded-full bg-indigo-200/30 blur-[100px] pointer-events-none" />
 
       {/* 1. HERO SECTION */}
@@ -36,18 +36,18 @@ export default function HomePage() {
             
             {/* Left Column: Text Content */}
             <div className="lg:col-span-6 space-y-6 text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-100 bg-violet-50 text-violet-600 text-xs font-bold tracking-wide">
+              {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-100 bg-blue-50 text-blue-600 text-xs font-bold tracking-wide">
                 <svg className="h-3 w-3 fill-current" viewBox="0 0 24 24">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" />
                   <path d="M2 17l10 5 10-5" />
                   <path d="M2 12l10 5 10-5" />
                 </svg>
                 Get ready-to-use data in minutes
-              </div>
+              </div> */}
               
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 leading-[1.12]">
                 Buy data scrapes.<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600">Get clean results.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-700">Get clean results.</span>
               </h1>
               
               <p className="text-base sm:text-lg text-slate-500 max-w-xl leading-relaxed">
@@ -57,7 +57,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
                 <Link
                   href="/signup"
-                  className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold bg-violet-600 text-white hover:bg-violet-700 shadow-md shadow-violet-500/10 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
+                  className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/10 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
                 >
                   Browse scrapers
                   <ArrowRight className="h-4.5 w-4.5" />
@@ -75,7 +75,7 @@ export default function HomePage() {
             {/* Right Column: Premium CSS Graphic */}
             <div className="lg:col-span-6 relative flex items-center justify-center">
               {/* Blur backdrop sphere */}
-              <div className="absolute w-[320px] h-[320px] rounded-full bg-violet-200/50 blur-[80px] pointer-events-none" />
+              <div className="absolute w-[320px] h-[320px] rounded-full bg-blue-200/50 blur-[80px] pointer-events-none" />
               
               <div className="relative w-full max-w-[480px] h-[340px] flex items-center justify-center">
                 
@@ -164,7 +164,7 @@ export default function HomePage() {
             </div>
             <Link 
               href="/signup" 
-              className="text-sm font-bold text-violet-600 hover:text-violet-700 flex items-center gap-1 group transition"
+              className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 group transition"
             >
               View all
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -178,7 +178,7 @@ export default function HomePage() {
                 <Link
                   key={scraper.id}
                   href={`/signup`}
-                  className="group bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md hover:border-violet-200 hover:scale-[1.01] active:scale-[0.99] transition duration-200 flex flex-col justify-between"
+                  className="group bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md hover:border-blue-200 hover:scale-[1.01] active:scale-[0.99] transition duration-200 flex flex-col justify-between"
                 >
                   <div className="space-y-4">
                     <div className="h-12 w-12 rounded-2xl border border-slate-100 shadow-sm bg-slate-50 shrink-0 flex items-center justify-center p-1.5">
@@ -191,7 +191,7 @@ export default function HomePage() {
                       />
                     </div>
                     <div>
-                      <h3 className="text-base font-extrabold text-slate-900 group-hover:text-violet-600 transition-colors">
+                      <h3 className="text-base font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">
                         {scraper.name}
                       </h3>
                       <p className="text-xs text-slate-500 leading-relaxed mt-1">
@@ -204,7 +204,7 @@ export default function HomePage() {
                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                       From {scraper.id === 'google-maps' ? '10' : '10'} credits
                     </span>
-                    <div className="h-8.5 w-8.5 rounded-full bg-slate-50 text-slate-600 group-hover:bg-violet-600 group-hover:text-white flex items-center justify-center transition-all shadow-sm">
+                    <div className="h-8.5 w-8.5 rounded-full bg-slate-50 text-slate-600 group-hover:bg-blue-600 group-hover:text-white flex items-center justify-center transition-all shadow-sm">
                       <ArrowRight className="h-4.5 w-4.5" />
                     </div>
                   </div>
@@ -228,7 +228,7 @@ export default function HomePage() {
             
             {/* Step 1 */}
             <div className="relative flex flex-col items-center text-center group">
-              <div className="h-14 w-14 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center shadow-sm border border-violet-100/50 mb-6 group-hover:scale-105 transition-transform duration-200">
+              <div className="h-14 w-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm border border-blue-100/50 mb-6 group-hover:scale-105 transition-transform duration-200">
                 <MousePointerClick className="h-6.5 w-6.5" />
               </div>
               <h3 className="text-base font-bold text-slate-900 mb-1.5">1. Choose scraper</h3>
@@ -266,7 +266,7 @@ export default function HomePage() {
       {/* 4. COMPLIANCE & GDPR SECTION */}
       <section className="py-16 bg-white border-t border-slate-100">
         <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-10 text-center space-y-6">
-          <div className="inline-flex p-3 bg-violet-50 text-violet-600 rounded-2xl border border-violet-100/50 shadow-sm">
+          <div className="inline-flex p-3 bg-blue-50 text-blue-600 rounded-2xl border border-blue-100/50 shadow-sm">
             <ShieldCheck className="h-7 w-7" />
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">
@@ -275,7 +275,7 @@ export default function HomePage() {
           <p className="text-slate-500 text-sm leading-relaxed max-w-2xl mx-auto">
             Datan vi samlar in kommer från publika källor där informationen publicerats i syfte att hållas tillgänglig för allmänheten. Vi lagrar inte rådata längre än nödvändigt för att generera din export och vi säljer aldrig dina filer vidare.
           </p>
-          <Link href="/compliance" className="text-violet-600 hover:text-violet-750 font-bold text-sm inline-flex items-center gap-1 group transition">
+          <Link href="/compliance" className="text-blue-600 hover:text-blue-700 font-bold text-sm inline-flex items-center gap-1 group transition">
             Läs mer i våra riktlinjer
             <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -329,19 +329,19 @@ export default function HomePage() {
       {/* 6. FINAL CTA SECTION */}
       <section className="py-20 bg-white border-t border-slate-100 relative">
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 text-center">
-          <div className="bg-gradient-to-r from-violet-600 to-indigo-700 text-white rounded-3xl p-12 text-center shadow-lg relative overflow-hidden space-y-6">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-3xl p-12 text-center shadow-lg relative overflow-hidden space-y-6">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
             
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight max-w-xl mx-auto">
               Redo att skapa din första leadlista?
             </h2>
-            <p className="text-violet-100 max-w-md mx-auto text-xs sm:text-sm leading-relaxed">
+            <p className="text-blue-100 max-w-md mx-auto text-xs sm:text-sm leading-relaxed">
               Skapa ett konto kostnadsfritt och utforska gränssnittet. Du kan köpa credits via Stripe och starta din första sökning direkt.
             </p>
             <div className="pt-2">
               <Link
                 href="/signup"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold bg-white text-violet-600 hover:bg-slate-50 shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold bg-white text-blue-600 hover:bg-slate-50 shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
               >
                 Registrera dig nu
                 <ArrowRight className="h-4.5 w-4.5" />

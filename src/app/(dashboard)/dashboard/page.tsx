@@ -78,7 +78,7 @@ export default async function DashboardOverview() {
         </div>
         <Link
           href="/dashboard/create"
-          className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 active:scale-[0.98] transition-all"
+          className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all"
         >
           <PlusCircle className="h-4 w-4" />
           Skapa ny sökning
@@ -93,7 +93,7 @@ export default async function DashboardOverview() {
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Credits kvar</span>
             <div className="text-2xl font-black text-slate-900">{credits} cr</div>
           </div>
-          <div className="p-3 rounded-xl bg-[#EEF2FF] text-[#4F46E5]">
+          <div className="p-3 rounded-xl bg-blue-50 text-blue-600">
             <Coins className="h-5 w-5" />
           </div>
         </div>
@@ -149,7 +149,7 @@ export default async function DashboardOverview() {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-bold text-slate-950">Senaste sökningar</h2>
-          <Link href="/dashboard/jobs" className="text-xs text-[#4F46E5] hover:text-[#4338CA] font-bold flex items-center gap-1">
+          <Link href="/dashboard/jobs" className="text-xs text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1">
             Visa alla sökningar
             <ArrowRight className="h-3 w-3" />
           </Link>
@@ -246,7 +246,7 @@ export default async function DashboardOverview() {
                           ) : (
                             <Link
                               href={`/dashboard/jobs/${job.id}`}
-                              className="text-xs text-[#4F46E5] hover:text-[#4338CA] font-bold"
+                              className="text-xs text-blue-600 hover:text-blue-700 font-bold"
                             >
                               Visa
                             </Link>

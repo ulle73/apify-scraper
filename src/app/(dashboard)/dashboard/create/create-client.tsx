@@ -152,7 +152,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto py-4 font-sans">
+    <div className="w-full py-4 font-sans">
       
       {/* 1. CATALOG STAGE */}
       {stage === 'catalog' && (
@@ -174,7 +174,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Sök bland tillgängliga scrapers..."
-                className="w-full pl-10 pr-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-all shadow-sm"
               />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
             </div>
@@ -207,12 +207,12 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
               <p className="text-xs text-slate-400">Försök söka med en annan term eller byt kategori.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-2">
               {filteredScrapers.map(scraper => (
                 <button
                   key={scraper.id}
                   onClick={() => handleSelectScraper(scraper)}
-                  className="w-full text-left bg-white rounded-2xl border border-[#F1F5F9] p-5 shadow-sm hover:shadow-md hover:border-violet-200 transition-all duration-200 flex flex-col justify-between group"
+                  className="w-full text-left bg-white rounded-2xl border border-[#F1F5F9] p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group"
                 >
                   <div className="flex gap-4">
                     <div className="h-12 w-12 rounded-xl border border-[#E2E8F0] shadow-sm bg-slate-50 shrink-0 flex items-center justify-center p-1.5">
@@ -225,7 +225,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                       />
                     </div>
                     <div className="space-y-1">
-                      <h3 className="text-sm font-extrabold text-slate-900 group-hover:text-violet-600 transition-colors">
+                      <h3 className="text-sm font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">
                         {scraper.name}
                       </h3>
                       <p className="text-xs text-slate-500 leading-relaxed font-semibold">
@@ -238,7 +238,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                     <span className="bg-slate-50 px-2 py-1 rounded border border-slate-100/50">
                       {scraper.category}
                     </span>
-                    <div className="flex items-center gap-1 text-slate-500 font-extrabold group-hover:text-violet-600 transition-colors">
+                    <div className="flex items-center gap-1 text-slate-500 font-extrabold group-hover:text-blue-600 transition-colors">
                       Välj
                       <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
                     </div>
@@ -312,7 +312,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                     onChange={(e) => handleInputChange(field.name, e.target.value)}
                     placeholder={field.placeholder}
                     rows={4}
-                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-all shadow-sm"
                   />
                 ) : field.type === 'select' ? (
                   <select
@@ -320,7 +320,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                     required={field.required}
                     value={formValues[field.name] === undefined ? '' : formValues[field.name]}
                     onChange={(e) => handleInputChange(field.name, e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-blue-500 transition-all shadow-sm"
                   >
                     {field.options?.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -335,7 +335,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                       type="checkbox"
                       checked={!!formValues[field.name]}
                       onChange={(e) => handleInputChange(field.name, e.target.checked)}
-                      className="h-4 w-4 text-[#4F46E5] border-slate-300 rounded focus:ring-[#4F46E5]"
+                      className="h-4 w-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
                     />
                     <span className="text-sm font-semibold text-slate-700">{field.placeholder || field.label}</span>
                   </div>
@@ -349,7 +349,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                     value={formValues[field.name] === undefined ? '' : formValues[field.name]}
                     onChange={(e) => handleInputChange(field.name, field.type === 'number' ? Number(e.target.value) : e.target.value)}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+                    className="w-full px-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-all shadow-sm"
                   />
                 )}
               </div>
@@ -372,7 +372,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
             <div className="pt-4">
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 active:scale-[0.99] transition-all"
+                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 active:scale-[0.99] transition-all"
               >
                 Gå vidare till granskning
                 <ArrowRight className="h-4 w-4" />
@@ -451,7 +451,7 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
               <button
                 onClick={handlePayWithCredits}
                 disabled={loading || initialBalance < getEstimatedCredits()}
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all duration-200"
               >
                 {loading ? (
                   <>

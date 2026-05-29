@@ -34,9 +34,9 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative text-violet-600 group-hover:scale-105 transition-transform duration-200">
+            <div className="relative text-blue-600 group-hover:scale-105 transition-transform duration-200">
               <svg className="h-6.5 w-6.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" fill="rgba(99, 102, 241, 0.15)" />
+                <path d="M12 2L2 7l10 5 10-5-10-5z" fill="rgba(91, 139, 245, 0.15)" />
                 <path d="M2 17l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -76,7 +76,7 @@ export default function Header() {
                   href="/dashboard"
                   className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition"
                 >
-                  <LayoutDashboard className="h-4 w-4 text-violet-500" />
+                  <LayoutDashboard className="h-4 w-4 text-blue-500" />
                   Dashboard
                 </Link>
                 <button
@@ -97,7 +97,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-5 py-2.5 rounded-xl text-sm font-bold bg-violet-600 text-white hover:bg-violet-750 shadow-md shadow-violet-500/10 hover:shadow-violet-500/20 hover:scale-[1.01] transition-all duration-200"
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 hover:scale-[1.01] transition-all duration-200"
                 >
                   Get started
                 </Link>
@@ -150,7 +150,7 @@ export default function Header() {
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-base font-semibold bg-violet-50 text-violet-600"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-base font-semibold bg-blue-50 text-blue-600"
                 >
                   <LayoutDashboard className="h-5 w-5" />
                   Gå till Dashboard
@@ -178,7 +178,7 @@ export default function Header() {
                 <Link
                   href="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center w-full py-2.5 rounded-xl text-base font-bold bg-violet-600 text-white"
+                  className="flex items-center justify-center w-full py-2.5 rounded-xl text-base font-bold bg-blue-600 text-white"
                 >
                   Get started
                 </Link>

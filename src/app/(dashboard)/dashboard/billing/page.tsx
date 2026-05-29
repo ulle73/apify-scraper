@@ -100,7 +100,7 @@ export default async function BillingPage(context: { searchParams: Promise<{ sta
       {/* Credits Card Display */}
       <div className="p-6 rounded-2xl border border-[#F1F5F9] bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div className="flex items-center gap-4">
-          <div className="p-4 rounded-2xl bg-[#EEF2FF] text-[#4F46E5] border border-[#E2E8F0]">
+          <div className="p-4 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100">
             <Coins className="h-8 w-8" />
           </div>
           <div>
@@ -117,7 +117,7 @@ export default async function BillingPage(context: { searchParams: Promise<{ sta
       {/* Credit Packages Grid */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-slate-950 flex items-center gap-2">
-          <CreditCard className="h-5 w-5 text-[#4F46E5]" />
+          <CreditCard className="h-5 w-5 text-blue-600" />
           Köp fler credits
         </h2>
         
@@ -129,7 +129,7 @@ export default async function BillingPage(context: { searchParams: Promise<{ sta
                 key={plan.id}
                 className={`p-6 rounded-2xl border bg-white flex flex-col justify-between transition-all ${
                   isPro 
-                    ? 'border-2 border-[#4F46E5] shadow-md shadow-[#4F46E5]/5' 
+                    ? 'border-2 border-blue-600 shadow-md shadow-blue-500/5' 
                     : 'border-[#F1F5F9] shadow-sm'
                 }`}
               >
@@ -137,19 +137,19 @@ export default async function BillingPage(context: { searchParams: Promise<{ sta
                   <div className="flex justify-between items-start mb-3">
                     <h3 className="font-bold text-slate-900 text-base">{plan.name}</h3>
                     {isPro && (
-                      <span className="px-2.5 py-0.5 rounded-lg bg-[#EEF2FF] text-[#4F46E5] font-black text-[9px] uppercase tracking-wide">
+                      <span className="px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-600 font-black text-[9px] uppercase tracking-wide">
                         Populär
                       </span>
                     )}
                   </div>
                   
                   <div className="text-3xl font-black text-slate-900 mb-2">{plan.priceSEK} kr</div>
-                  <div className="text-2xl font-black text-[#4F46E5] mb-4">{plan.credits} credits</div>
+                  <div className="text-2xl font-black text-blue-600 mb-4">{plan.credits} credits</div>
                   
                   <ul className="space-y-2 text-xs text-slate-500 font-semibold mb-6">
-                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-[#4F46E5] shrink-0" /> Sparas obegränsat</li>
-                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-[#4F46E5] shrink-0" /> Max {plan.maxPerJob} leads per sökning</li>
-                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-[#4F46E5] shrink-0" /> Ingen egen nyckel krävs</li>
+                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-blue-600 shrink-0" /> Sparas obegränsat</li>
+                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-blue-600 shrink-0" /> Max {plan.maxPerJob} leads per sökning</li>
+                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-blue-600 shrink-0" /> Ingen egen nyckel krävs</li>
                   </ul>
                 </div>
 
@@ -159,7 +159,7 @@ export default async function BillingPage(context: { searchParams: Promise<{ sta
                   label="Köp nu"
                   className={
                     isPro 
-                      ? 'bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 font-bold rounded-xl w-full py-3.5 transition-all text-sm'
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 font-bold rounded-xl w-full py-3.5 transition-all text-sm'
                       : 'border border-[#E2E8F0] hover:bg-slate-50 bg-white text-slate-700 font-bold rounded-xl w-full py-3.5 transition-all text-sm'
                   }
                 />
@@ -172,7 +172,7 @@ export default async function BillingPage(context: { searchParams: Promise<{ sta
       {/* Transaction History Section */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-slate-950 flex items-center gap-2">
-          <History className="h-5 w-5 text-[#4F46E5]" />
+          <History className="h-5 w-5 text-blue-600" />
           Transaktionshistorik
         </h2>
 
@@ -236,11 +236,11 @@ export default async function BillingPage(context: { searchParams: Promise<{ sta
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {tx.type === 'usage' ? (
-                            <Link href={`/dashboard/jobs/${tx.reference_id}`} className="text-[#4F46E5] hover:underline font-bold">
+                            <Link href={`/dashboard/jobs/${tx.reference_id}`} className="text-blue-600 hover:underline font-bold">
                               Visa sökjobb
                             </Link>
                           ) : tx.type === 'refund' ? (
-                            <Link href={`/dashboard/jobs/${tx.reference_id}`} className="text-[#4F46E5] hover:underline font-bold">
+                            <Link href={`/dashboard/jobs/${tx.reference_id}`} className="text-blue-600 hover:underline font-bold">
                               Körningsfel: återbetalad
                             </Link>
                           ) : (

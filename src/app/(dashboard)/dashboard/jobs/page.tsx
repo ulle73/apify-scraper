@@ -42,7 +42,7 @@ export default async function JobsPage() {
         </div>
         <Link
           href="/dashboard/create"
-          className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 active:scale-[0.98] transition-all"
+          className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all"
         >
           <PlusCircle className="h-4 w-4" />
           Skapa ny sökning
@@ -60,7 +60,7 @@ export default async function JobsPage() {
           </p>
           <Link
             href="/dashboard/create"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 active:scale-[0.98] transition-all"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all"
           >
             Skapa din första sökning
           </Link>
@@ -145,7 +145,7 @@ export default async function JobsPage() {
                         {job.status === 'completed' && (
                           <a
                             href={job.export_csv_url || ''}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 transition-all animate-fade-in"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 transition-all animate-fade-in"
                           >
                             <Download className="h-3.5 w-3.5" /> CSV
                           </a>

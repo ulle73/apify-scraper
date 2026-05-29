@@ -47,7 +47,7 @@ export default async function DashboardLayout({
         {/* Brand/Logo - Leadify style */}
         <div className="p-6 border-b border-[#F1F5F9]">
           <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="p-2 bg-[#4F46E5] rounded-xl text-white shadow-md shadow-[#4F46E5]/20">
+            <div className="p-2 bg-blue-600 rounded-xl text-white shadow-md shadow-blue-500/10">
               <Layers className="h-5 w-5" />
             </div>
             <span className="text-xl font-bold text-slate-900 tracking-tight">
@@ -90,16 +90,16 @@ export default async function DashboardLayout({
       <div className="flex flex-col flex-grow overflow-hidden">
         <header className="md:hidden flex items-center justify-between p-4 border-b border-[#E2E8F0] bg-white shadow-sm">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="p-1.5 bg-[#4F46E5] rounded-lg text-white">
+            <div className="p-1.5 bg-blue-600 rounded-lg text-white">
               <Layers className="h-4.5 w-4.5" />
             </div>
             <span className="text-base font-bold text-slate-900">Leadify</span>
           </Link>
           <div className="flex items-center gap-3">
-            <div className="px-2.5 py-1 rounded-lg bg-[#EEF2FF] text-xs font-bold text-[#4F46E5]">
+            <div className="px-2.5 py-1 rounded-lg bg-blue-50 text-xs font-bold text-blue-600">
               {credits} cr
             </div>
-            <Link href="/dashboard/create" className="p-1.5 rounded-lg bg-[#4F46E5] text-white">
+            <Link href="/dashboard/create" className="p-1.5 rounded-lg bg-blue-600 text-white">
               <PlusCircle className="h-4.5 w-4.5" />
             </Link>
           </div>
@@ -107,7 +107,7 @@ export default async function DashboardLayout({
 
         {/* 2. MAIN PANELS */}
         <main className="flex-grow overflow-y-auto p-4 md:p-8 relative">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-[1700px] w-full mx-auto">
             {children}
           </div>
         </main>

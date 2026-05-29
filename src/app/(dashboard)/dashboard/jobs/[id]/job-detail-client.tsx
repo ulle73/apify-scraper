@@ -218,7 +218,7 @@ export function JobDetailClient({ jobId, initialJob, initialResults }: JobDetail
             </a>
             <a
               href={job.export_csv_url ? job.export_csv_url.replace('format=csv', 'format=xlsx') : ''}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-sm shadow-[#4F46E5]/20 active:scale-[0.98] transition-all"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-500/10 active:scale-[0.98] transition-all"
             >
               <FileSpreadsheet className="h-4 w-4" />
               Download Excel
@@ -231,13 +231,13 @@ export function JobDetailClient({ jobId, initialJob, initialResults }: JobDetail
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Results Found */}
         <div className="p-5 rounded-2xl border border-[#F1F5F9] bg-white shadow-sm flex items-center gap-4">
-          <div className="p-3.5 rounded-2xl bg-[#EEF2FF] text-[#4F46E5]">
+          <div className="p-3.5 rounded-2xl bg-blue-50 text-blue-600">
             <MapPin className="h-5 w-5" />
           </div>
           <div>
             <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">Results found</div>
             <div className="text-2xl font-black text-slate-900 mt-0.5">
-              {job.status === 'completed' ? resultsMetric : <Loader2 className="h-6 w-6 animate-spin text-[#4F46E5]" />}
+              {job.status === 'completed' ? resultsMetric : <Loader2 className="h-6 w-6 animate-spin text-blue-600" />}
             </div>
           </div>
         </div>
@@ -285,7 +285,7 @@ export function JobDetailClient({ jobId, initialJob, initialResults }: JobDetail
       {/* Active Scraping / Error Boards */}
       {isActive && (
         <div className="p-8 rounded-2xl border border-blue-100 bg-blue-50/50 text-center space-y-4 max-w-lg mx-auto">
-          <Loader2 className="h-8 w-8 animate-spin text-[#4F46E5] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto" />
           <h3 className="text-sm font-bold text-slate-950">Insamling pågår...</h3>
           <p className="text-xs text-slate-500 leading-relaxed">
             Våra bakgrundsjobb hämtar just nu företagsdata från Google Maps. Det tar normalt under 2 minuter. Du behöver inte vänta kvar här.
@@ -321,7 +321,7 @@ export function JobDetailClient({ jobId, initialJob, initialResults }: JobDetail
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search in results..."
-                className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-all shadow-sm"
               />
             </div>
             
@@ -370,7 +370,7 @@ export function JobDetailClient({ jobId, initialJob, initialResults }: JobDetail
                               href={row.website}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-[#4F46E5] hover:underline font-bold"
+                              className="text-blue-600 hover:underline font-bold"
                             >
                               {row.domain || 'website'}
                             </a>
@@ -418,7 +418,7 @@ export function JobDetailClient({ jobId, initialJob, initialResults }: JobDetail
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 
-                <button className="h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold bg-[#4F46E5] text-white shrink-0 shadow-sm">
+                <button className="h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold bg-blue-600 text-white shrink-0 shadow-sm">
                   1
                 </button>
                 <button className="h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold hover:bg-slate-50 text-slate-600 shrink-0">

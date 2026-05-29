@@ -149,11 +149,11 @@ function AuthForm({ mode }: AuthPageProps) {
 
       {/* Navigation Header */}
       <header className="relative z-10 w-full bg-white px-6 sm:px-12 lg:px-16 py-5 flex items-center justify-between">
-        {/* Brand Logo */}
+        {/* Brand/Logo - Leadify style */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="relative text-violet-600 group-hover:scale-105 transition-transform duration-200">
+          <div className="relative text-blue-600 group-hover:scale-105 transition-transform duration-200">
             <svg className="h-6.5 w-6.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" fill="rgba(99, 102, 241, 0.15)" />
+              <path d="M12 2L2 7l10 5 10-5-10-5z" fill="rgba(91, 139, 245, 0.15)" />
               <path d="M2 17l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -219,7 +219,7 @@ function AuthForm({ mode }: AuthPageProps) {
               </h1>
               <p className="text-center text-slate-500 text-sm mb-8">
                 Har du inget konto?{' '}
-                <Link href="/signup" className="font-bold text-violet-600 hover:underline transition-colors">
+                <Link href="/signup" className="font-bold text-blue-600 hover:underline transition-colors">
                   Skapa ett konto gratis
                 </Link>
               </p>
@@ -260,7 +260,7 @@ function AuthForm({ mode }: AuthPageProps) {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       placeholder="namn@foretag.se"
-                      className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-sm transition-all"
+                      className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm transition-all"
                     />
                   </div>
                 </div>
@@ -283,7 +283,7 @@ function AuthForm({ mode }: AuthPageProps) {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       placeholder="••••••••••••••••"
-                      className="w-full pl-11 pr-11 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-sm transition-all"
+                      className="w-full pl-11 pr-11 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm transition-all"
                     />
                     <button
                       type="button"
@@ -300,7 +300,7 @@ function AuthForm({ mode }: AuthPageProps) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                    className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
                   >
                     {loading ? (
                       <>
@@ -359,8 +359,8 @@ function AuthForm({ mode }: AuthPageProps) {
               {/* Legal Notice */}
               <p className="text-center text-[11px] text-slate-400 mt-6 leading-relaxed">
                 Genom att logga in godkänner du våra{' '}
-                <Link href="/terms" className="text-violet-600 underline font-semibold">Användarvillkor</Link> och{' '}
-                <Link href="/privacy" className="text-violet-600 underline font-semibold">Integritetspolicy</Link>.
+                <Link href="/terms" className="text-blue-600 underline font-semibold">Användarvillkor</Link> och{' '}
+                <Link href="/privacy" className="text-blue-600 underline font-semibold">Integritetspolicy</Link>.
               </p>
             </>
           ) : (
@@ -372,7 +372,7 @@ function AuthForm({ mode }: AuthPageProps) {
               </h1>
               <p className="text-center text-slate-500 text-sm mb-8">
                 Redan medlem?{' '}
-                <Link href="/login" className="font-bold text-violet-600 hover:underline transition-colors">
+                <Link href="/login" className="font-bold text-blue-600 hover:underline transition-colors">
                   Logga in här
                 </Link>
               </p>
@@ -388,7 +388,7 @@ function AuthForm({ mode }: AuthPageProps) {
                     Registreringen lyckades. Vi omdirigerar dig till inloggningssidan...
                   </p>
                   <div className="flex justify-center pt-2">
-                    <Loader2 className="h-5 w-5 animate-spin text-violet-600" />
+                    <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                   </div>
                 </div>
               ) : (
@@ -415,7 +415,7 @@ function AuthForm({ mode }: AuthPageProps) {
                         value={signupFullName}
                         onChange={(e) => setSignupFullName(e.target.value)}
                         placeholder="t.ex. Johan Andersson"
-                        className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-sm transition-all"
+                        className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm transition-all"
                       />
                     </div>
                   </div>
@@ -436,7 +436,7 @@ function AuthForm({ mode }: AuthPageProps) {
                         value={signupEmail}
                         onChange={(e) => setSignupEmail(e.target.value)}
                         placeholder="namn@foretag.se"
-                        className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-sm transition-all"
+                        className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm transition-all"
                       />
                     </div>
                   </div>
@@ -455,7 +455,7 @@ function AuthForm({ mode }: AuthPageProps) {
                         value={signupCompanyName}
                         onChange={(e) => setSignupCompanyName(e.target.value)}
                         placeholder="t.ex. Företaget AB"
-                        className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-sm transition-all"
+                        className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm transition-all"
                       />
                     </div>
                   </div>
@@ -475,7 +475,7 @@ function AuthForm({ mode }: AuthPageProps) {
                         value={signupPassword}
                         onChange={(e) => setSignupPassword(e.target.value)}
                         placeholder="••••••••••••••••"
-                        className="w-full pl-11 pr-11 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-sm transition-all"
+                        className="w-full pl-11 pr-11 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm transition-all"
                       />
                       <button
                         type="button"
@@ -492,7 +492,7 @@ function AuthForm({ mode }: AuthPageProps) {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-bold bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-md shadow-[#4F46E5]/15 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                      className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/10 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
                     >
                       {loading ? (
                         <>
@@ -552,8 +552,8 @@ function AuthForm({ mode }: AuthPageProps) {
               {/* Legal Notice */}
               <p className="text-center text-[11px] text-slate-400 mt-6 leading-relaxed">
                 Genom att registrera dig godkänner du våra{' '}
-                <Link href="/terms" className="text-violet-600 underline font-semibold">Användarvillkor</Link> och{' '}
-                <Link href="/privacy" className="text-violet-600 underline font-semibold">Integritetspolicy</Link>.
+                <Link href="/terms" className="text-blue-600 underline font-semibold">Användarvillkor</Link> och{' '}
+                <Link href="/privacy" className="text-blue-600 underline font-semibold">Integritetspolicy</Link>.
               </p>
             </>
           )}
@@ -590,7 +590,7 @@ function AuthForm({ mode }: AuthPageProps) {
         <div className="flex flex-col items-center">
           <div className="flex items-center gap-0.5 mb-1">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="h-3.5 w-3.5 fill-violet-600 text-violet-600" />
+              <Star key={i} className="h-3.5 w-3.5 fill-blue-600 text-blue-600" />
             ))}
           </div>
           <p className="text-xs font-bold text-slate-900 leading-none mb-0.5">4.8 av 5 i betyg</p>
@@ -617,7 +617,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
-        <Loader2 className="h-8 w-8 animate-spin text-violet-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
       </div>
     }>
       <AuthForm mode={mode} />

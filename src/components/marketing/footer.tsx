@@ -10,9 +10,9 @@ export default function Footer() {
           {/* Logo & Info */}
           <div className="md:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="text-violet-600">
+              <div className="text-blue-600">
                 <svg className="h-5.5 w-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" fill="rgba(99, 102, 241, 0.15)" />
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" fill="rgba(91, 139, 245, 0.15)" />
                   <path d="M2 17l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>

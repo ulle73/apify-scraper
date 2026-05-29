@@ -57,11 +57,11 @@ export default function SidebarNav({ credits }: SidebarNavProps) {
             href={link.href}
             className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
               link.isActive
-                ? 'bg-[#EEF2FF] text-[#4F46E5]'
+                ? 'bg-blue-50 text-blue-600'
                 : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'
             }`}
           >
-            <Icon className={`h-4.5 w-4.5 ${link.isActive ? 'text-[#4F46E5]' : 'text-slate-400'}`} />
+            <Icon className={`h-4.5 w-4.5 ${link.isActive ? 'text-blue-600' : 'text-slate-400'}`} />
             {link.name}
           </Link>
         );

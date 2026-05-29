@@ -15,6 +15,19 @@
   --color-brand-700: #0e7490;
   --color-brand-800: #155e75;
   --color-brand-900: #164e63;
+
+  /* Custom Cobalt/Blue palette matching hero-login.png */
+  --color-blue-50: #f0f5ff;
+  --color-blue-100: #e0ebff;
+  --color-blue-200: #c2d7ff;
+  --color-blue-300: #99bdff;
+  --color-blue-400: #709eff;
+  --color-blue-500: #5b8bf5;
+  --color-blue-600: #3f6eed;
+  --color-blue-700: #2b53db;
+  --color-blue-800: #1f3eb3;
+  --color-blue-900: #1a308c;
+  --color-blue-950: #121e59;
   
   /* Slate/Navy dashboard theme colors */
   --color-navy-50: #f8fafc;

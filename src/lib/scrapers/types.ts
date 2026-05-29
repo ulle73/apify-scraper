@@ -49,6 +49,24 @@ export interface ParsedInput {
   [key: string]: unknown;
 }
 
+export interface ScraperConfig {
+  id: string;
+  name: string;
+  description: string;
+  actorId: string;
+  actorIdEnvKey?: string;
+  category: 'leads' | 'search' | 'social' | 'content' | 'ecommerce';
+  enabled: boolean;
+  icon: string;
+  creditCostPerResult?: number;
+  fixedCreditCost?: number;
+  fields: ScraperField[];
+  buildApifyInput: (input: ParsedInput) => Record<string, unknown>;
+  normalizeItem: (item: Record<string, unknown>) => NormalizedScrapeResult;
+  getExportColumns?: () => ExportColumn[];
+  getMockData?: (maxResults: number) => Record<string, unknown>[];
+}
+
 export interface ScraperAdapter {
   id: string;
   name: string;
