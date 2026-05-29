@@ -29,7 +29,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorIdEnvKey: 'APIFY_GOOGLE_MAPS_ACTOR_ID',
     category: 'leads',
     enabled: true,
-    icon: 'MapPin',
+    icon: '/icons/google-maps-platform-svgrepo-com.svg',
     creditCostPerResult: 1,
     fields: [
       {
@@ -134,7 +134,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/google-search-scraper',
     category: 'search',
     enabled: true,
-    icon: 'Search',
+    icon: '/icons/google-svgrepo-com.svg',
     creditCostPerResult: 1,
     fields: [
       {
@@ -203,7 +203,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/instagram-profile-scraper',
     category: 'social',
     enabled: true,
-    icon: 'Instagram',
+    icon: '/icons/instagram-1-svgrepo-com.svg',
     creditCostPerResult: 2,
     fields: [
       {
@@ -255,7 +255,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/tiktok-scraper',
     category: 'social',
     enabled: true,
-    icon: 'Video',
+    icon: '/icons/brand-tiktok-sq-svgrepo-com.svg',
     creditCostPerResult: 1.5,
     fields: [
       {
@@ -315,7 +315,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/linkedin-company-scraper',
     category: 'leads',
     enabled: true,
-    icon: 'Linkedin',
+    icon: '/icons/linkedin-svgrepo-com.svg',
     creditCostPerResult: 3,
     fields: [
       {
@@ -364,7 +364,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/contact-info-scraper',
     category: 'leads',
     enabled: true,
-    icon: 'Mail',
+    icon: '/icons/contact-details.svg',
     creditCostPerResult: 1.5,
     fields: [
       {
@@ -430,7 +430,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/website-content-crawler',
     category: 'content',
     enabled: true,
-    icon: 'Globe',
+    icon: '/icons/web-search-svgrepo-com.svg',
     creditCostPerResult: 1.2,
     fields: [
       {
@@ -486,7 +486,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/youtube-scraper',
     category: 'content',
     enabled: true,
-    icon: 'Youtube',
+    icon: '/icons/youtube-color-svgrepo-com.svg',
     creditCostPerResult: 1.5,
     fields: [
       {
@@ -543,7 +543,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/amazon-crawler',
     category: 'ecommerce',
     enabled: true,
-    icon: 'ShoppingBag',
+    icon: '/icons/amazon-color-svgrepo-com.svg',
     creditCostPerResult: 2,
     fields: [
       {
@@ -603,7 +603,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/news-scraper',
     category: 'content',
     enabled: true,
-    icon: 'Newspaper',
+    icon: '/icons/news-scraper.svg',
     creditCostPerResult: 1.5,
     fields: [
       {
@@ -658,7 +658,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/facebook-pages-scraper',
     category: 'social',
     enabled: true,
-    icon: 'Facebook',
+    icon: '/icons/facebook-1-svgrepo-com.svg',
     creditCostPerResult: 2,
     fields: [
       {
@@ -708,7 +708,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/twitter-scraper',
     category: 'social',
     enabled: true,
-    icon: 'Twitter',
+    icon: '/icons/x.svg',
     creditCostPerResult: 2.5,
     fields: [
       {
@@ -763,7 +763,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/tripadvisor-scraper',
     category: 'leads',
     enabled: true,
-    icon: 'Building',
+    icon: '/icons/tripadvisor.svg',
     creditCostPerResult: 1.5,
     fields: [
       {
@@ -822,7 +822,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/reddit-scraper',
     category: 'social',
     enabled: true,
-    icon: 'MessageSquare',
+    icon: '/icons/reddit.svg',
     creditCostPerResult: 1.5,
     fields: [
       {
@@ -886,7 +886,7 @@ export const scrapersConfig: ScraperConfig[] = [
     actorId: 'apify/indeed-scraper',
     category: 'leads',
     enabled: true,
-    icon: 'Hotel',
+    icon: '/icons/indeed.svg',
     creditCostPerResult: 2,
     fields: [
       {

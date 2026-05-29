@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   MapPin, 
   Search, 
@@ -173,15 +174,6 @@ export default function HomePage() {
           {/* Grid showing only REAL and CONNECTED scrapers (google-maps) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {enabledScrapers.map((scraper) => {
-              // Custom colors based on scraper type
-              let colorClasses = "bg-teal-50 text-teal-600 border-teal-100/50";
-              let ScraperIcon = MapPin;
-
-              if (scraper.id === 'google-maps') {
-                colorClasses = "bg-teal-50 text-teal-600 border-teal-100/50";
-                ScraperIcon = MapPin;
-              }
-
               return (
                 <Link
                   key={scraper.id}
@@ -189,8 +181,14 @@ export default function HomePage() {
                   className="group bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md hover:border-violet-200 hover:scale-[1.01] active:scale-[0.99] transition duration-200 flex flex-col justify-between"
                 >
                   <div className="space-y-4">
-                    <div className={`h-12 w-12 rounded-2xl flex items-center justify-center border shadow-sm ${colorClasses}`}>
-                      <ScraperIcon className="h-6 w-6" />
+                    <div className="h-12 w-12 rounded-2xl border border-slate-100 shadow-sm bg-slate-50 shrink-0 flex items-center justify-center p-1.5">
+                      <Image
+                        src={scraper.icon || '/icons/default.svg'}
+                        alt={scraper.name}
+                        width={40}
+                        height={40}
+                        className="object-contain w-full h-full"
+                      />
                     </div>
                     <div>
                       <h3 className="text-base font-extrabold text-slate-900 group-hover:text-violet-600 transition-colors">

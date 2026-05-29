@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Coins, 
   Sparkles,
@@ -16,20 +17,11 @@ import {
   Search,
   Filter
 } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import { getEnabledAdapters } from '@/lib/scrapers/registry';
 import { ScraperAdapter } from '@/lib/scrapers/types';
 
 interface CreateClientProps {
   initialBalance: number;
-}
-
-function ScraperIcon({ name, className }: { name: string; className?: string }) {
-  const IconComponent = (LucideIcons as any)[name];
-  if (!IconComponent) {
-    return <LucideIcons.HelpCircle className={className} />;
-  }
-  return <IconComponent className={className} />;
 }
 
 export default function CreateClient({ initialBalance }: CreateClientProps) {
@@ -223,8 +215,14 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                   className="w-full text-left bg-white rounded-2xl border border-[#F1F5F9] p-5 shadow-sm hover:shadow-md hover:border-violet-200 transition-all duration-200 flex flex-col justify-between group"
                 >
                   <div className="flex gap-4">
-                    <div className="h-12 w-12 rounded-xl bg-violet-50 text-violet-600 border border-violet-100 flex items-center justify-center shadow-sm shrink-0">
-                      <ScraperIcon name={scraper.icon || 'HelpCircle'} className="h-6 w-6" />
+                    <div className="h-12 w-12 rounded-xl border border-[#E2E8F0] shadow-sm bg-slate-50 shrink-0 flex items-center justify-center p-1.5">
+                      <Image
+                        src={scraper.icon || '/icons/default.svg'}
+                        alt={scraper.name}
+                        width={40}
+                        height={40}
+                        className="object-contain w-full h-full"
+                      />
                     </div>
                     <div className="space-y-1">
                       <h3 className="text-sm font-extrabold text-slate-900 group-hover:text-violet-600 transition-colors">
@@ -274,11 +272,15 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
                 </p>
               </div>
             </div>
-            {/* Scraper Icon Box */}
-            <div className="h-14 w-14 bg-white border border-[#E2E8F0] rounded-2xl flex items-center justify-center shadow-sm shrink-0">
-              <div className="h-9 w-9 rounded-xl bg-violet-50 text-violet-600 border border-violet-100 flex items-center justify-center shadow-sm">
-                <ScraperIcon name={selectedScraper.icon || 'HelpCircle'} className="h-5 w-5" />
-              </div>
+             {/* Scraper Icon Box */}
+            <div className="h-14 w-14 rounded-2xl border border-[#E2E8F0] shadow-sm bg-slate-50 shrink-0 flex items-center justify-center p-2">
+              <Image
+                src={selectedScraper.icon || '/icons/default.svg'}
+                alt={selectedScraper.name}
+                width={44}
+                height={44}
+                className="object-contain w-full h-full"
+              />
             </div>
           </div>
 
@@ -407,8 +409,14 @@ export default function CreateClient({ initialBalance }: CreateClientProps) {
           <div className="p-6 rounded-2xl border border-[#F1F5F9] bg-white shadow-sm space-y-5">
             {/* Header info */}
             <div className="flex items-center gap-3 pb-5 border-b border-[#F1F5F9]">
-              <div className="h-12 w-12 bg-slate-50 border border-[#E2E8F0] rounded-xl flex items-center justify-center shrink-0">
-                <ScraperIcon name={selectedScraper.icon || 'HelpCircle'} className="h-6 w-6 text-slate-800" />
+              <div className="h-12 w-12 rounded-xl border border-[#E2E8F0] shadow-sm bg-slate-50 shrink-0 flex items-center justify-center p-1.5">
+                <Image
+                  src={selectedScraper.icon || '/icons/default.svg'}
+                  alt={selectedScraper.name}
+                  width={40}
+                  height={40}
+                  className="object-contain w-full h-full"
+                />
               </div>
               <div className="space-y-0.5">
                 <h3 className="text-sm font-bold text-slate-900">{selectedScraper.name}</h3>
